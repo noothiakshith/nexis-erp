@@ -37,6 +37,10 @@ import {
   tasks,
   alerts,
   documents,
+  purchaseOrders,
+  leaves,
+  approvals,
+  approvalSteps,
 } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 
@@ -68,7 +72,6 @@ const employeeRouter = router({
 
       const result = await db.insert(employees).values({
         userId: 1, // Will be linked to user
-        employeeId: `EMP-${Date.now()}`,
         firstName: input.firstName,
         lastName: input.lastName,
         email: input.email,
@@ -79,6 +82,84 @@ const employeeRouter = router({
       });
 
       return result;
+    }),
+
+  getLeaves: protectedProcedure.query(async ({ ctx }) => {
+    const db = await getDb();
+    if (!db) return [];
+    const emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
+    if (!emp.length) return [];
+    return await db.select().from(leaves).where(eq(leaves.employeeId, emp[0].id));
+  }),
+
+  submitLeaveRequest: protectedProcedure
+    .input(z.object({
+      leaveType: z.string(),
+      startDate: z.string(),
+      endDate: z.string(),
+      reason: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      let emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
+
+      if (!emp.length) {
+        // Auto-create a placeholder employee record for the current user if missing
+        const names = ctx.user.name?.split(' ') || ["Staff", "Member"];
+        const firstName = names[0];
+        const lastName = names.length > 1 ? names.slice(1).join(' ') : "System";
+
+        const newEmpRes = await db.insert(employees).values({
+          userId: ctx.user.id,
+          firstName,
+          lastName,
+          email: ctx.user.email || `user${ctx.user.id}@nexis.local`,
+          department: "General",
+          position: "Staff",
+          joinDate: new Date(),
+          status: "active",
+        });
+
+        const newEmpId = newEmpRes[0].insertId;
+        const newEmp = await db.select().from(employees).where(eq(employees.id, newEmpId as any)).limit(1);
+        emp = newEmp;
+      }
+
+      if (!emp.length) throw new Error("Could not create employee profile automatically");
+
+      const result = await db.insert(leaves).values({
+        employeeId: emp[0].id,
+        leaveType: input.leaveType,
+        startDate: new Date(input.startDate),
+        endDate: new Date(input.endDate),
+        reason: input.reason,
+        status: "pending",
+      });
+
+      const leaveId = result[0].insertId;
+
+      // Trigger multi-step approval workflow
+      // Step 1: Manager approval
+      await db.insert(approvals).values({
+        requestType: "leave_request",
+        requestId: leaveId as any,
+        requestorId: ctx.user.id,
+        totalSteps: 1,
+        status: "pending",
+      }).then(async (res) => {
+        const approvalId = res[0].insertId;
+        await db.insert(approvalSteps).values({
+          approvalId: approvalId as any,
+          stepNumber: 1,
+          approverRole: "manager",
+          assignedTo: emp[0].reportingManager || 1, // Fallback to user 1
+          status: "pending",
+        });
+      });
+
+      return { leaveId };
     }),
 });
 
@@ -120,7 +201,7 @@ const financeRouter = router({
       return result;
     }),
 
-  createExpense: protectedProcedure
+  submitExpense: protectedProcedure
     .input(
       z.object({
         description: z.string(),
@@ -134,6 +215,28 @@ const financeRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
+      let emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
+
+      if (!emp.length) {
+        // Auto-create placeholder for expense submission too
+        const names = ctx.user.name?.split(' ') || ["Staff", "Member"];
+        const firstName = names[0];
+        const lastName = names.length > 1 ? names.slice(1).join(' ') : "System";
+
+        const newEmpRes = await db.insert(employees).values({
+          userId: ctx.user.id,
+          firstName,
+          lastName,
+          email: ctx.user.email || `user${ctx.user.id}@nexis.local`,
+          department: "General",
+          position: "Staff",
+          joinDate: new Date(),
+          status: "active",
+        });
+        const newEmpId = newEmpRes[0].insertId;
+        emp = await db.select().from(employees).where(eq(employees.id, newEmpId as any)).limit(1);
+      }
+
       const result = await db.insert(expenses).values({
         description: input.description,
         category: input.category,
@@ -141,9 +244,41 @@ const financeRouter = router({
         expenseDate: new Date(input.expenseDate),
         submittedBy: ctx.user.id,
         notes: input.notes,
+        status: "submitted",
       });
 
-      return result;
+      const expenseId = result[0].insertId;
+
+      // Expense Approval Workflow (2 steps: Manager -> Finance)
+      const approvalResult = await db.insert(approvals).values({
+        requestType: "expense_report",
+        requestId: expenseId as any,
+        requestorId: ctx.user.id,
+        totalSteps: 2,
+        status: "pending",
+      });
+
+      const approvalId = approvalResult[0].insertId;
+
+      // Step 1: Manager
+      await db.insert(approvalSteps).values({
+        approvalId: approvalId as any,
+        stepNumber: 1,
+        approverRole: "manager",
+        assignedTo: emp[0]?.reportingManager || 1,
+        status: "pending",
+      });
+
+      // Step 2: Finance Reviewer (default to ID 1 for now)
+      await db.insert(approvalSteps).values({
+        approvalId: approvalId as any,
+        stepNumber: 2,
+        approverRole: "finance_admin",
+        assignedTo: 1,
+        status: "pending",
+      });
+
+      return { expenseId };
     }),
 });
 
@@ -184,7 +319,7 @@ const inventoryRouter = router({
         name: input.name,
         category: input.category,
         unitPrice: input.unitPrice.toString(),
-        quantity: 0,
+        currentStock: 0,
         reorderPoint: input.reorderPoint,
         reorderQuantity: input.reorderQuantity,
       });
@@ -296,7 +431,7 @@ const projectRouter = router({
         startDate: new Date(input.startDate),
         endDate: new Date(input.endDate),
         budget: input.budget ? input.budget.toString() : undefined,
-        manager: ctx.user.id,
+        projectManager: ctx.user.id,
       });
 
       return result;
@@ -412,6 +547,72 @@ const documentsRouter = router({
     }),
 });
 
+const procurementRouter = router({
+  listAll: protectedProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+    return await db.select().from(purchaseOrders);
+  }),
+  createPurchaseOrder: protectedProcedure
+    .input(
+      z.object({
+        poNumber: z.string(),
+        supplierId: z.number(),
+        totalAmount: z.number(),
+        orderDate: z.string(),
+        status: z.enum(["draft", "pending_approval", "approved", "sent", "received", "cancelled"]).optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const res = await db.insert(purchaseOrders).values({
+        poNumber: input.poNumber,
+        supplierId: input.supplierId,
+        totalAmount: input.totalAmount.toString(),
+        orderDate: new Date(input.orderDate),
+        status: input.status || "draft",
+        createdBy: ctx.user.id,
+      });
+
+      const poId = res[0].insertId;
+
+      if (input.status === "pending_approval") {
+        const approvalRes = await db.insert(approvals).values({
+          requestType: "purchase_order",
+          requestId: poId as any,
+          requestorId: ctx.user.id,
+          totalSteps: input.totalAmount > 5000 ? 2 : 1,
+          status: "pending",
+        });
+        const approvalId = approvalRes[0].insertId;
+
+        // Step 1: Manager
+        await db.insert(approvalSteps).values({
+          approvalId: approvalId as any,
+          stepNumber: 1,
+          approverRole: "manager",
+          assignedTo: 1, // Default to user 1 for this test environment
+          status: "pending",
+        });
+
+        // Step 2: Admin for larger amounts
+        if (input.totalAmount > 5000) {
+          await db.insert(approvalSteps).values({
+            approvalId: approvalId as any,
+            stepNumber: 2,
+            approverRole: "admin",
+            assignedTo: 1,
+            status: "pending",
+          });
+        }
+      }
+
+      return res;
+    }),
+});
+
 // ==================== MAIN ROUTER ====================
 export const appRouter = router({
   system: systemRouter,
@@ -432,6 +633,7 @@ export const appRouter = router({
   inventory: inventoryRouter,
   crm: crmRouter,
   project: projectRouter,
+  procurement: procurementRouter,
   alerts: alertsRouter,
   analytics: analyticsRouter,
   documents: documentsRouter,

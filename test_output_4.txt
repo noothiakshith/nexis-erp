@@ -1,0 +1,18 @@
+
+> nexis-erp@1.0.0 test /Users/akshith/Projects/nexis-erp
+> vitest run
+
+
+ RUN  v2.1.9 /Users/akshith/Projects/nexis-erp
+
+ ✓ server/auth.logout.test.ts (1 test) 5ms
+ ✓ server/routers/aiAssistant.test.ts (14 tests) 115ms
+ ✓ server/routers/approvals.test.ts (5 tests) 119ms
+ ✓ server/routers/metrics.test.ts (11 tests) 169ms
+ ✓ server/routers.test.ts (26 tests) 107ms
+
+ Test Files  5 passed (5)
+      Tests  57 passed (57)
+   Start at  14:01:04
+   Duration  1.10s (transform 271ms, setup 109ms, collect 3.26s, tests 515ms, environment 1ms, prepare 326ms)
+

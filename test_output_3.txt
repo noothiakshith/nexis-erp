@@ -1,0 +1,202 @@
+
+> nexis-erp@1.0.0 test /Users/akshith/Projects/nexis-erp
+> vitest run
+
+
+ RUN  v2.1.9 /Users/akshith/Projects/nexis-erp
+
+ ✓ server/auth.logout.test.ts (1 test) 4ms
+ ✓ server/routers/aiAssistant.test.ts (14 tests) 137ms
+ ✓ server/routers/approvals.test.ts (5 tests) 153ms
+ ❯ server/routers.test.ts (26 tests | 4 failed) 140ms
+   × ERP Routers > employee router > getProfile returns employee data 34ms
+     → expected { id: 1, userId: 1, …(13) } to be undefined
+   × ERP Routers > employee router > create employee with valid input 10ms
+     → Failed query: insert into `employees` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `department`, `position`, `reportingManager`, `joinDate`, `salary`, `employmentType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, ?, ?, default, ?, ?, default, default, default, default)
+params: 1,John,Doe,john.doe@example.com,Engineering,Senior Engineer,Tue Mar 10 2026 14:00:10 GMT+0530 (India Standard Time),100000
+   × ERP Routers > inventory router > createProduct with valid input 3ms
+     → Failed query: insert into `products` (`id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, default, ?, default, ?, ?, default, default, default, default)
+params: PROD-001,Test Product,Electronics,99.99,10,50
+   × ERP Routers > crm router > createCustomer with valid input 2ms
+     → Failed query: insert into `customers` (`id`, `name`, `email`, `phone`, `company`, `address`, `city`, `country`, `industry`, `customerType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, default, default, default, default, default, default, default)
+params: Test Company,contact@testcompany.com,+1234567890,Test Company Inc
+ ✓ server/routers/metrics.test.ts (11 tests) 249ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > employee router > getProfile returns employee data
+AssertionError: expected { id: 1, userId: 1, …(13) } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+Object {
+  "createdAt": 2026-03-10T08:27:40.000Z,
+  "department": "Engineering",
+  "email": "john.doe@example.com",
+  "employmentType": "full_time",
+  "firstName": "John",
+  "id": 1,
+  "joinDate": 2026-03-10T00:00:00.000Z,
+  "lastName": "Doe",
+  "phone": null,
+  "position": "Senior Engineer",
+  "reportingManager": null,
+  "salary": "100000.00",
+  "status": "active",
+  "updatedAt": 2026-03-10T08:27:40.000Z,
+  "userId": 1,
+}
+
+ ❯ server/routers.test.ts:57:23
+     55|       const profile = await caller.employee.getProfile();
+     56| 
+     57|       expect(profile).toBeUndefined();
+       |                       ^
+     58|     });
+     59| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > employee router > create employee with valid input
+TRPCError: Failed query: insert into `employees` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `department`, `position`, `reportingManager`, `joinDate`, `salary`, `employmentType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, ?, ?, default, ?, ?, default, default, default, default)
+params: 1,John,Doe,john.doe@example.com,Engineering,Senior Engineer,Tue Mar 10 2026 14:00:10 GMT+0530 (India Standard Time),100000
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:69:22
+     67|       if (!db) throw new Error("Database not available");
+     68| 
+     69|       const result = await db.insert(employees).values({
+       |                      ^
+     70|         userId: 1, // Will be linked to user
+     71|         employeeId: `EMP-${Date.now()}`,
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: insert into `employees` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `department`, `position`, `reportingManager`, `joinDate`, `salary`, `employmentType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, ?, ?, default, ?, ?, default, default, default, default)
+params: 1,John,Doe,john.doe@example.com,Engineering,Senior Engineer,Tue Mar 10 2026 14:00:10 GMT+0530 (India Standard Time),100000
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:69:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'insert into `employees` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `department`, `position`, `reportingManager`, `joinDate`, `salary`, `employmentType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, ?, ?, default, ?, ?, default, default, default, default)', params: [ 1, 'John', 'Doe', 'john.doe@example.com', 'Engineering', 'Senior Engineer', '2026-03-10T08:30:10.345Z', '100000' ] }
+Caused by: Error: Duplicate entry 'john.doe@example.com' for key 'employees.employees_email_unique'
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:101:25
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:27
+ ❯ QueryPromise.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/insert.ts:323:25
+ ❯ QueryPromise.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_DUP_ENTRY', errno: 1062, sql: 'insert into `employees` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `department`, `position`, `reportingManager`, `joinDate`, `salary`, `employmentType`, `status`, `createdAt`, `updatedAt`) values (default, 1, \'John\', \'Doe\', \'john.doe@example.com\', default, \'Engineering\', \'Senior Engineer\', default, \'2026-03-10 14:00:10.345\', \'100000\', default, default, default, default)', sqlState: '23000', sqlMessage: 'Duplicate entry \'john.doe@example.com\' for key \'employees.employees_email_unique\'' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > inventory router > createProduct with valid input
+TRPCError: Failed query: insert into `products` (`id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, default, ?, default, ?, ?, default, default, default, default)
+params: PROD-001,Test Product,Electronics,99.99,10,50
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:182:22
+    180|       if (!db) throw new Error("Database not available");
+    181| 
+    182|       const result = await db.insert(products).values({
+       |                      ^
+    183|         sku: input.sku,
+    184|         name: input.name,
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: insert into `products` (`id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, default, ?, default, ?, ?, default, default, default, default)
+params: PROD-001,Test Product,Electronics,99.99,10,50
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:182:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'insert into `products` (`id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, default, ?, default, ?, ?, default, default, default, default)', params: [ 'PROD-001', 'Test Product', 'Electronics', '99.99', 10, 50 ] }
+Caused by: Error: Duplicate entry 'PROD-001' for key 'products.products_sku_unique'
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:101:25
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:27
+ ❯ QueryPromise.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/insert.ts:323:25
+ ❯ QueryPromise.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_DUP_ENTRY', errno: 1062, sql: 'insert into `products` (`id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt`) values (default, \'PROD-001\', \'Test Product\', \'Electronics\', default, \'99.99\', default, 10, 50, default, default, default, default)', sqlState: '23000', sqlMessage: 'Duplicate entry \'PROD-001\' for key \'products.products_sku_unique\'' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > crm router > createCustomer with valid input
+TRPCError: Failed query: insert into `customers` (`id`, `name`, `email`, `phone`, `company`, `address`, `city`, `country`, `industry`, `customerType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, default, default, default, default, default, default, default)
+params: Test Company,contact@testcompany.com,+1234567890,Test Company Inc
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:233:22
+    231|       if (!db) throw new Error("Database not available");
+    232| 
+    233|       const result = await db.insert(customers).values({
+       |                      ^
+    234|         name: input.name,
+    235|         email: input.email,
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: insert into `customers` (`id`, `name`, `email`, `phone`, `company`, `address`, `city`, `country`, `industry`, `customerType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, default, default, default, default, default, default, default)
+params: Test Company,contact@testcompany.com,+1234567890,Test Company Inc
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:233:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'insert into `customers` (`id`, `name`, `email`, `phone`, `company`, `address`, `city`, `country`, `industry`, `customerType`, `status`, `createdAt`, `updatedAt`) values (default, ?, ?, ?, ?, default, default, default, default, default, default, default, default)', params: [ 'Test Company', 'contact@testcompany.com', '+1234567890', 'Test Company Inc' ] }
+Caused by: Error: Duplicate entry 'contact@testcompany.com' for key 'customers.customers_email_unique'
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:101:25
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:27
+ ❯ QueryPromise.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/insert.ts:323:25
+ ❯ QueryPromise.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_DUP_ENTRY', errno: 1062, sql: 'insert into `customers` (`id`, `name`, `email`, `phone`, `company`, `address`, `city`, `country`, `industry`, `customerType`, `status`, `createdAt`, `updatedAt`) values (default, \'Test Company\', \'contact@testcompany.com\', \'+1234567890\', \'Test Company Inc\', default, default, default, default, default, default, default, default)', sqlState: '23000', sqlMessage: 'Duplicate entry \'contact@testcompany.com\' for key \'customers.customers_email_unique\'' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  4 failed | 53 passed (57)
+   Start at  14:00:09
+   Duration  1.21s (transform 228ms, setup 121ms, collect 3.13s, tests 682ms, environment 1ms, prepare 386ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

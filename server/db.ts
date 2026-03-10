@@ -165,7 +165,7 @@ export async function getLowStockProducts(reorderThreshold: number = 0) {
   return await db
     .select()
     .from(products)
-    .where(sql`quantity <= reorderPoint`);
+    .where(sql`${products.currentStock} <= ${products.reorderPoint}`);
 }
 
 // ==================== CRM QUERIES ====================
@@ -191,7 +191,7 @@ export async function getProjectsByManager(managerId: number) {
   return await db
     .select()
     .from(projects)
-    .where(eq(projects.manager, managerId));
+    .where(eq(projects.projectManager, managerId));
 }
 
 export async function getTasksByProject(projectId: number) {

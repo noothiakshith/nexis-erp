@@ -116,8 +116,8 @@ export default function AdvancedAnalytics() {
                       name: task.name,
                       projectName: "",
                       projectId: selectedProjectId,
-                      startDate: new Date(task.startDate),
-                      endDate: new Date(task.endDate),
+                      startDate: new Date(task.startDate || new Date()),
+                      endDate: new Date(task.endDate || new Date()),
                       progress: task.progress,
                       status: task.status,
                     }))}

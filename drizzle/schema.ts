@@ -18,7 +18,7 @@ import {
  */
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  openId: varchar("openId", { length: 128 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }).unique(),
   phone: varchar("phone", { length: 20 }),

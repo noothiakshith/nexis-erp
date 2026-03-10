@@ -65,7 +65,7 @@ export async function getProjectTaskTimeline(projectId: number) {
     const tasksData = await db
       .select({
         id: tasks.id,
-        name: tasks.name,
+        name: tasks.title,
         startDate: tasks.dueDate,
         endDate: tasks.dueDate,
         status: tasks.status,
@@ -97,7 +97,7 @@ export async function getProjectMilestones(projectId: number) {
     const milestoneTasks = await db
       .select({
         id: tasks.id,
-        name: tasks.name,
+        name: tasks.title,
         dueDate: tasks.dueDate,
         status: tasks.status,
         priority: tasks.priority,
@@ -133,34 +133,34 @@ export async function getSalesFunnelData(): Promise<FunnelStage[]> {
   if (!db) return [];
 
   try {
-    const stages = ["lead", "qualified", "proposal", "negotiation", "won"];
+    const stages = ["new", "contacted", "qualified", "proposal", "won"] as const;
     const funnelData: FunnelStage[] = [];
 
     for (let i = 0; i < stages.length; i++) {
       const stage = stages[i];
       const stageLeads = await db
         .select({
-          count: count(),
+          num: count(),
           totalValue: sum(leads.value),
         })
         .from(leads)
-        .where(eq(leads.status, stage));
+        .where(eq(leads.status, stage as any));
 
-      const count = stageLeads[0]?.count || 0;
+      const numCount = (stageLeads[0]?.num as number) || 0;
       const totalValue = parseFloat(stageLeads[0]?.totalValue || "0");
 
       // Calculate conversion rate from previous stage
       let conversionRate = 0;
       if (i > 0 && funnelData[i - 1]) {
-        conversionRate = funnelData[i - 1].count > 0 ? (count / funnelData[i - 1].count) * 100 : 0;
+        conversionRate = funnelData[i - 1].count > 0 ? (numCount / funnelData[i - 1].count) * 100 : 0;
       }
 
       funnelData.push({
         stage: stage.charAt(0).toUpperCase() + stage.slice(1),
-        count,
+        count: numCount,
         value: totalValue,
         conversionRate,
-        avgDealSize: count > 0 ? totalValue / count : 0,
+        avgDealSize: numCount > 0 ? totalValue / numCount : 0,
       });
     }
 

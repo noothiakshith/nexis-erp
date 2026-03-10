@@ -1,0 +1,618 @@
+
+> nexis-erp@1.0.0 test /Users/akshith/Projects/nexis-erp
+> vitest run
+
+
+ RUN  v2.1.9 /Users/akshith/Projects/nexis-erp
+
+ ✓ server/routers/metrics.test.ts (11 tests) 5ms
+ ✓ server/routers/approvals.test.ts (5 tests) 8ms
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat messages
+AI Assistant Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:42:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat with context
+AI Assistant Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:42:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle empty messages gracefully
+AI Assistant Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:42:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate finance insights
+Insights Generation Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:125:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate inventory insights
+Insights Generation Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:125:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate CRM insights
+Insights Generation Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:125:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate project insights
+Insights Generation Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:125:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate demand predictions
+Prediction Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:263:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate inventory predictions
+Prediction Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:263:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate cash flow predictions
+Prediction Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:263:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate maintenance predictions
+Prediction Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:263:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate sales predictions
+Prediction Error: Error: OPENAI_API_KEY is not configured
+    at assertApiKey (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:219:11)
+    at Module.invokeLLM (/Users/akshith/Projects/nexis-erp/server/_core/llm.ts:269:3)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:263:32
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20)
+    at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+ ❯ server/routers/aiAssistant.test.ts (14 tests | 11 failed) 21ms
+   × AI Assistant Router > chat > should handle chat messages 10ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > chat > should handle chat with context 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > generateInsights > should generate finance insights 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > generateInsights > should generate inventory insights 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > generateInsights > should generate CRM insights 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > generateInsights > should generate project insights 0ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate demand predictions 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate inventory predictions 4ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate cash flow predictions 1ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate maintenance predictions 0ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate sales predictions 0ms
+     → expected false to be true // Object.is equality
+ ✓ server/auth.logout.test.ts (1 test) 2ms
+ ❯ server/routers.test.ts (26 tests | 10 failed) 16ms
+   × ERP Routers > employee router > create employee with valid input 8ms
+     → Database not available
+   × ERP Routers > finance router > createInvoice with valid input 0ms
+     → Database not available
+   × ERP Routers > finance router > createExpense with valid input 0ms
+     → Database not available
+   × ERP Routers > inventory router > createProduct with valid input 0ms
+     → Database not available
+   × ERP Routers > crm router > createCustomer with valid input 0ms
+     → Database not available
+   × ERP Routers > crm router > createLead with valid input 0ms
+     → Database not available
+   × ERP Routers > project router > createProject with valid input 0ms
+     → Database not available
+   × ERP Routers > project router > createTask with valid input 0ms
+     → Database not available
+   × ERP Routers > alerts router > markAsRead updates alert status 0ms
+     → Database not available
+   × ERP Routers > documents router > uploadDocument with valid input 0ms
+     → Database not available
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > employee router > create employee with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:67:22
+     65|     .mutation(async ({ input }) => {
+     66|       const db = await getDb();
+     67|       if (!db) throw new Error("Database not available");
+       |                      ^
+     68| 
+     69|       const result = await db.insert(employees).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:67:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > finance router > createInvoice with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:107:22
+    105|     .mutation(async ({ input, ctx }) => {
+    106|       const db = await getDb();
+    107|       if (!db) throw new Error("Database not available");
+       |                      ^
+    108| 
+    109|       const result = await db.insert(invoices).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:107:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > finance router > createExpense with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:135:22
+    133|     .mutation(async ({ input, ctx }) => {
+    134|       const db = await getDb();
+    135|       if (!db) throw new Error("Database not available");
+       |                      ^
+    136| 
+    137|       const result = await db.insert(expenses).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:135:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > inventory router > createProduct with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:180:22
+    178|     .mutation(async ({ input }) => {
+    179|       const db = await getDb();
+    180|       if (!db) throw new Error("Database not available");
+       |                      ^
+    181| 
+    182|       const result = await db.insert(products).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:180:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > crm router > createCustomer with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:231:22
+    229|     .mutation(async ({ input }) => {
+    230|       const db = await getDb();
+    231|       if (!db) throw new Error("Database not available");
+       |                      ^
+    232| 
+    233|       const result = await db.insert(customers).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:231:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > crm router > createLead with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:254:22
+    252|     .mutation(async ({ input }) => {
+    253|       const db = await getDb();
+    254|       if (!db) throw new Error("Database not available");
+       |                      ^
+    255| 
+    256|       const result = await db.insert(leads).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:254:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > project router > createProject with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:291:22
+    289|     .mutation(async ({ input, ctx }) => {
+    290|       const db = await getDb();
+    291|       if (!db) throw new Error("Database not available");
+       |                      ^
+    292| 
+    293|       const result = await db.insert(projects).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:291:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > project router > createTask with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:317:22
+    315|     .mutation(async ({ input }) => {
+    316|       const db = await getDb();
+    317|       if (!db) throw new Error("Database not available");
+       |                      ^
+    318| 
+    319|       const result = await db.insert(tasks).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:317:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > alerts router > markAsRead updates alert status
+TRPCError: Database not available
+ ❯ server/routers.ts:345:22
+    343|     .mutation(async ({ input }) => {
+    344|       const db = await getDb();
+    345|       if (!db) throw new Error("Database not available");
+       |                      ^
+    346| 
+    347|       const result = await db
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:345:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > documents router > uploadDocument with valid input
+TRPCError: Database not available
+ ❯ server/routers.ts:398:22
+    396|     .mutation(async ({ input, ctx }) => {
+    397|       const db = await getDb();
+    398|       if (!db) throw new Error("Database not available");
+       |                      ^
+    399| 
+    400|       const result = await db.insert(documents).values({
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+Caused by: Error: Database not available
+ ❯ server/routers.ts:398:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat messages
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:43:32
+     41| 
+     42|       expect(response).toBeDefined();
+     43|       expect(response.success).toBe(true);
+       |                                ^
+     44|       expect(response.message).toBeDefined();
+     45|       expect(typeof response.message).toBe("string");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat with context
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:59:32
+     57| 
+     58|       expect(response).toBeDefined();
+     59|       expect(response.success).toBe(true);
+       |                                ^
+     60|       expect(response.message).toBeDefined();
+     61|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate finance insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:88:32
+     86| 
+     87|       expect(response).toBeDefined();
+     88|       expect(response.success).toBe(true);
+       |                                ^
+     89|       expect(response.module).toBe("finance");
+     90|       expect(response.insights).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate inventory insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:103:32
+    101| 
+    102|       expect(response).toBeDefined();
+    103|       expect(response.success).toBe(true);
+       |                                ^
+    104|       expect(response.module).toBe("inventory");
+    105|       expect(response.insights).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate CRM insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:117:32
+    115| 
+    116|       expect(response).toBeDefined();
+    117|       expect(response.success).toBe(true);
+       |                                ^
+    118|       expect(response.module).toBe("crm");
+    119|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate project insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:130:32
+    128| 
+    129|       expect(response).toBeDefined();
+    130|       expect(response.success).toBe(true);
+       |                                ^
+    131|       expect(response.module).toBe("projects");
+    132|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate demand predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:175:32
+    173| 
+    174|       expect(response).toBeDefined();
+    175|       expect(response.success).toBe(true);
+       |                                ^
+    176|       expect(response.category).toBe("demand");
+    177|       expect(response.predictions).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate inventory predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:190:32
+    188| 
+    189|       expect(response).toBeDefined();
+    190|       expect(response.success).toBe(true);
+       |                                ^
+    191|       expect(response.category).toBe("inventory");
+    192|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate cash flow predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:203:32
+    201| 
+    202|       expect(response).toBeDefined();
+    203|       expect(response.success).toBe(true);
+       |                                ^
+    204|       expect(response.category).toBe("cash_flow");
+    205|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate maintenance predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:216:32
+    214| 
+    215|       expect(response).toBeDefined();
+    216|       expect(response.success).toBe(true);
+       |                                ^
+    217|       expect(response.category).toBe("maintenance");
+    218|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate sales predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:229:32
+    227| 
+    228|       expect(response).toBeDefined();
+    229|       expect(response.success).toBe(true);
+       |                                ^
+    230|       expect(response.category).toBe("sales");
+    231|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/21]⎯
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  21 failed | 36 passed (57)
+   Start at  13:52:45
+   Duration  883ms (transform 270ms, setup 0ms, collect 2.89s, tests 51ms, environment 1ms, prepare 320ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

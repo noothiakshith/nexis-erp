@@ -24,8 +24,8 @@ export type SessionPayload = {
   name: string;
 };
 
-const EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
-const GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
+const EXCHANGE_TOKEN_PATH = `/token`;
+const GET_USER_INFO_URL = `https://www.googleapis.com/oauth2/v3/userinfo`;
 const GET_USER_INFO_WITH_JWT_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfoWithJwt`;
 
 class OAuthService {
@@ -47,32 +47,46 @@ class OAuthService {
     code: string,
     state: string
   ): Promise<ExchangeTokenResponse> {
-    const payload: ExchangeTokenRequest = {
-      clientId: ENV.appId,
-      grantType: "authorization_code",
+    const payload = {
+      client_id: ENV.googleClientId,
+      client_secret: ENV.googleClientSecret,
+      grant_type: "authorization_code",
       code,
-      redirectUri: this.decodeState(state),
+      redirect_uri: this.decodeState(state),
     };
 
-    const { data } = await this.client.post<ExchangeTokenResponse>(
+    const { data } = await this.client.post<any>(
       EXCHANGE_TOKEN_PATH,
       payload
     );
 
-    return data;
+    return {
+      accessToken: data.access_token,
+      tokenType: data.token_type,
+      expiresIn: data.expires_in,
+      refreshToken: data.refresh_token,
+      scope: data.scope,
+      idToken: data.id_token,
+    };
   }
 
   async getUserInfoByToken(
     token: ExchangeTokenResponse
   ): Promise<GetUserInfoResponse> {
-    const { data } = await this.client.post<GetUserInfoResponse>(
-      GET_USER_INFO_PATH,
-      {
-        accessToken: token.accessToken,
-      }
-    );
+    const { data } = await axios.get<any>(GET_USER_INFO_URL, {
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
+    });
 
-    return data;
+    return {
+      openId: data.sub,
+      projectId: ENV.appId,
+      name: data.name,
+      email: data.email,
+      platform: "google",
+      loginMethod: "google",
+    };
   }
 }
 
@@ -272,20 +286,7 @@ class SDKServer {
 
     // If user not in DB, sync from OAuth server automatically
     if (!user) {
-      try {
-        const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
-        await db.upsertUser({
-          openId: userInfo.openId,
-          name: userInfo.name || null,
-          email: userInfo.email ?? null,
-          loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
-          lastSignedIn: signedInAt,
-        });
-        user = await db.getUserByOpenId(userInfo.openId);
-      } catch (error) {
-        console.error("[Auth] Failed to sync user from OAuth:", error);
-        throw ForbiddenError("Failed to sync user info");
-      }
+      throw ForbiddenError("User not found in local database. Please login again.");
     }
 
     if (!user) {

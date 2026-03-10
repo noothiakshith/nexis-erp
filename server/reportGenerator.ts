@@ -33,7 +33,7 @@ export interface ReportSection {
 /**
  * Generate financial report
  */
-export async function generateFinancialReport(timeframe: "month" | "quarter" | "year") {
+export async function generateFinancialReport(timeframe: "month" | "quarter" | "year"): Promise<ReportData | null> {
   const db = await getDb();
   if (!db) return null;
 
@@ -158,7 +158,7 @@ export async function generateFinancialReport(timeframe: "month" | "quarter" | "
             total: `$${parseFloat(item.total || "0").toLocaleString()}`,
           })),
         },
-      ],
+      ] as ReportSection[],
       summary: `This period shows total revenue of $${totalRevenue.toLocaleString()} with expenses of $${totalExpenses.toLocaleString()}, resulting in a profit of $${profit.toLocaleString()} (${margin.toFixed(2)}% margin).`,
     };
   } catch (error) {
@@ -170,7 +170,7 @@ export async function generateFinancialReport(timeframe: "month" | "quarter" | "
 /**
  * Generate inventory report
  */
-export async function generateInventoryReport() {
+export async function generateInventoryReport(): Promise<ReportData | null> {
   const db = await getDb();
   if (!db) return null;
 
@@ -180,7 +180,7 @@ export async function generateInventoryReport() {
       .select({
         id: products.id,
         name: products.name,
-        stockLevel: products.stockLevel,
+        stockLevel: products.currentStock,
         reorderPoint: products.reorderPoint,
         unitPrice: products.unitPrice,
       })
@@ -251,7 +251,7 @@ export async function generateInventoryReport() {
               totalValue: `$${(parseFloat(p.unitPrice || "0") * p.stockLevel).toLocaleString()}`,
             })),
         },
-      ],
+      ] as ReportSection[],
       summary: `Current inventory consists of ${inventoryData.length} products with a total value of $${totalValue.toLocaleString()}. ${lowStockCount} products are below reorder point and require immediate attention.`,
     };
   } catch (error) {
@@ -263,7 +263,7 @@ export async function generateInventoryReport() {
 /**
  * Generate HR report
  */
-export async function generateHRReport() {
+export async function generateHRReport(): Promise<ReportData | null> {
   const db = await getDb();
   if (!db) return null;
 
@@ -272,7 +272,8 @@ export async function generateHRReport() {
     const employeeData = await db
       .select({
         id: employees.id,
-        name: employees.name,
+        firstName: employees.firstName,
+        lastName: employees.lastName,
         department: employees.department,
         salary: employees.salary,
         status: employees.status,
@@ -334,12 +335,12 @@ export async function generateHRReport() {
             .sort((a, b) => parseFloat(b.salary || "0") - parseFloat(a.salary || "0"))
             .slice(0, 10)
             .map((e) => ({
-              name: e.name,
+              name: `${e.firstName} ${e.lastName}`,
               department: e.department,
               salary: `$${parseFloat(e.salary || "0").toLocaleString()}`,
             })),
         },
-      ],
+      ] as ReportSection[],
       summary: `Organization has ${totalEmployees} employees with a total monthly payroll of $${totalPayroll.toLocaleString()}. Average salary is $${(totalPayroll / totalEmployees).toFixed(0)}.`,
     };
   } catch (error) {
@@ -351,7 +352,7 @@ export async function generateHRReport() {
 /**
  * Generate sales report
  */
-export async function generateSalesReport() {
+export async function generateSalesReport(): Promise<ReportData | null> {
   const db = await getDb();
   if (!db) return null;
 
@@ -430,7 +431,7 @@ export async function generateSalesReport() {
             avgDeal: `$${(data.value / data.count).toFixed(0)}`,
           })),
         },
-      ],
+      ] as ReportSection[],
       summary: `Sales pipeline contains ${totalLeads} leads with a total value of $${totalPipeline.toLocaleString()}. ${wonLeads} deals have been won for a total of $${wonValue.toLocaleString()}, representing a ${((wonLeads / totalLeads) * 100).toFixed(1)}% conversion rate.`,
     };
   } catch (error) {
@@ -442,7 +443,7 @@ export async function generateSalesReport() {
 /**
  * Generate comprehensive report combining all modules
  */
-export async function generateComprehensiveReport(timeframe: "month" | "quarter" | "year") {
+export async function generateComprehensiveReport(timeframe: "month" | "quarter" | "year"): Promise<ReportData | null> {
   const [financial, inventory, hr, sales] = await Promise.all([
     generateFinancialReport(timeframe),
     generateInventoryReport(),
@@ -450,16 +451,17 @@ export async function generateComprehensiveReport(timeframe: "month" | "quarter"
     generateSalesReport(),
   ]);
 
+  const sections: ReportSection[] = [];
+  if (financial) sections.push(...financial.sections);
+  if (inventory) sections.push(...inventory.sections);
+  if (hr) sections.push(...hr.sections);
+  if (sales) sections.push(...sales.sections);
+
   return {
     title: `Comprehensive Business Report - ${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)}`,
     generatedAt: new Date(),
     timeframe,
-    reports: {
-      financial,
-      inventory,
-      hr,
-      sales,
-    },
+    sections,
     summary: "Complete overview of business performance across all departments",
   };
 }

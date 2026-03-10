@@ -250,7 +250,7 @@ export default function FinancialAnalytics() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="period" />
                     <YAxis label={{ value: "Margin (%)", angle: -90, position: "insideLeft" }} />
-                    <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
+                    <Tooltip formatter={(value: any) => `${Number(value).toFixed(2)}%`} />
                     <Legend />
                     <ReferenceLine y={20} stroke="#999" strokeDasharray="5 5" label="20% Target" />
                     <Line

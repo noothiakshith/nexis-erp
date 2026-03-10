@@ -1,0 +1,414 @@
+
+> nexis-erp@1.0.0 test /Users/akshith/Projects/nexis-erp
+> vitest run
+
+
+ RUN  v2.1.9 /Users/akshith/Projects/nexis-erp
+
+ ✓ server/auth.logout.test.ts (1 test) 3ms
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat messages
+Error gathering user context: DrizzleQueryError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getLowStockProducts (/Users/akshith/Projects/nexis-erp/server/db.ts:165:10)
+    at gatherUserContext (/Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:330:23)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:36:29
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20) {
+  query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+  params: [],
+  cause: Error: Unknown column 'quantity' in 'where clause'
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+    sqlState: '42S22',
+    sqlMessage: "Unknown column 'quantity' in 'where clause'"
+  }
+}
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle chat with context
+Error gathering user context: DrizzleQueryError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getLowStockProducts (/Users/akshith/Projects/nexis-erp/server/db.ts:165:10)
+    at gatherUserContext (/Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:330:23)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:36:29
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20) {
+  query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+  params: [],
+  cause: Error: Unknown column 'quantity' in 'where clause'
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+    sqlState: '42S22',
+    sqlMessage: "Unknown column 'quantity' in 'where clause'"
+  }
+}
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > chat > should handle empty messages gracefully
+Error gathering user context: DrizzleQueryError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getLowStockProducts (/Users/akshith/Projects/nexis-erp/server/db.ts:165:10)
+    at gatherUserContext (/Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:330:23)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:36:29
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20) {
+  query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+  params: [],
+  cause: Error: Unknown column 'quantity' in 'where clause'
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+    sqlState: '42S22',
+    sqlMessage: "Unknown column 'quantity' in 'where clause'"
+  }
+}
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate inventory insights
+Insights Generation Error: DrizzleQueryError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getLowStockProducts (/Users/akshith/Projects/nexis-erp/server/db.ts:165:10)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:105:25
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20) {
+  query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+  params: [],
+  cause: Error: Unknown column 'quantity' in 'where clause'
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+    sqlState: '42S22',
+    sqlMessage: "Unknown column 'quantity' in 'where clause'"
+  }
+}
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate project insights
+Insights Generation Error: DrizzleQueryError: Failed query: select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?
+params: 1
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getProjectsByManager (/Users/akshith/Projects/nexis-erp/server/db.ts:191:10)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:117:25
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20) {
+  query: 'select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?',
+  params: [ 1 ],
+  cause: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '= 1' at line 1
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_PARSE_ERROR',
+    errno: 1064,
+    sql: 'select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = 1',
+    sqlState: '42000',
+    sqlMessage: "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '= 1' at line 1"
+  }
+}
+
+stderr | server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate inventory predictions
+Prediction Error: DrizzleQueryError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+    at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18)
+    at Module.getLowStockProducts (/Users/akshith/Projects/nexis-erp/server/db.ts:165:10)
+    at /Users/akshith/Projects/nexis-erp/server/routers/aiAssistant.ts:248:25
+    at resolveMiddleware (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at callRecursive (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20)
+    at procedure (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20) {
+  query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+  params: [],
+  cause: Error: Unknown column 'quantity' in 'where clause'
+      at PromisePool.query (/Users/akshith/Projects/nexis-erp/node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22)
+      at file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+      at MySql2PreparedQuery.queryWithCache (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18)
+      at MySql2PreparedQuery.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29)
+      at MySqlSelectBase.execute (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25)
+      at MySqlSelectBase.then (file:///Users/akshith/Projects/nexis-erp/node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5) {
+    code: 'ER_BAD_FIELD_ERROR',
+    errno: 1054,
+    sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint',
+    sqlState: '42S22',
+    sqlMessage: "Unknown column 'quantity' in 'where clause'"
+  }
+}
+
+ ❯ server/routers/aiAssistant.test.ts (14 tests | 3 failed) 96ms
+   × AI Assistant Router > generateInsights > should generate inventory insights 4ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > generateInsights > should generate project insights 2ms
+     → expected false to be true // Object.is equality
+   × AI Assistant Router > getPredictions > should generate inventory predictions 1ms
+     → expected false to be true // Object.is equality
+ ✓ server/routers/metrics.test.ts (11 tests) 148ms
+ ✓ server/routers/approvals.test.ts (5 tests) 149ms
+ ❯ server/routers.test.ts (26 tests | 3 failed) 113ms
+   × ERP Routers > finance router > createInvoice with valid input 14ms
+     → Failed query: insert into `invoices` (`id`, `invoiceNumber`, `customerId`, `vendorId`, `amount`, `tax`, `totalAmount`, `status`, `issueDate`, `dueDate`, `description`, `notes`, `createdBy`, `createdAt`, `updatedAt`) values (default, ?, default, default, ?, ?, ?, default, ?, ?, ?, default, ?, default, default)
+params: INV-001,1000,100,1100,Tue Mar 10 2026 13:57:40 GMT+0530 (India Standard Time),Thu Apr 09 2026 13:57:40 GMT+0530 (India Standard Time),Test Invoice,1
+   × ERP Routers > inventory router > getLowStock returns low stock products 3ms
+     → Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+   × ERP Routers > project router > getProjects returns manager projects 2ms
+     → Failed query: select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?
+params: 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > finance router > createInvoice with valid input
+TRPCError: Failed query: insert into `invoices` (`id`, `invoiceNumber`, `customerId`, `vendorId`, `amount`, `tax`, `totalAmount`, `status`, `issueDate`, `dueDate`, `description`, `notes`, `createdBy`, `createdAt`, `updatedAt`) values (default, ?, default, default, ?, ?, ?, default, ?, ?, ?, default, ?, default, default)
+params: INV-001,1000,100,1100,Tue Mar 10 2026 13:57:40 GMT+0530 (India Standard Time),Thu Apr 09 2026 13:57:40 GMT+0530 (India Standard Time),Test Invoice,1
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:109:22
+    107|       if (!db) throw new Error("Database not available");
+    108| 
+    109|       const result = await db.insert(invoices).values({
+       |                      ^
+    110|         invoiceNumber: input.invoiceNumber,
+    111|         amount: input.amount.toString(),
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: insert into `invoices` (`id`, `invoiceNumber`, `customerId`, `vendorId`, `amount`, `tax`, `totalAmount`, `status`, `issueDate`, `dueDate`, `description`, `notes`, `createdBy`, `createdAt`, `updatedAt`) values (default, ?, default, default, ?, ?, ?, default, ?, ?, ?, default, ?, default, default)
+params: INV-001,1000,100,1100,Tue Mar 10 2026 13:57:40 GMT+0530 (India Standard Time),Thu Apr 09 2026 13:57:40 GMT+0530 (India Standard Time),Test Invoice,1
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:16
+ ❯ server/routers.ts:109:22
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'insert into `invoices` (`id`, `invoiceNumber`, `customerId`, `vendorId`, `amount`, `tax`, `totalAmount`, `status`, `issueDate`, `dueDate`, `description`, `notes`, `createdBy`, `createdAt`, `updatedAt`) values (default, ?, default, default, ?, ?, ?, default, ?, ?, ?, default, ?, default, default)', params: [ 'INV-001', '1000', '100', '1100', '2026-03-10T08:27:40.432Z', '2026-04-09T08:27:40.432Z', 'Test Invoice', 1 ] }
+Caused by: Error: Duplicate entry 'INV-001' for key 'invoices.invoices_invoiceNumber_unique'
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:101:25
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:100:27
+ ❯ QueryPromise.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/insert.ts:323:25
+ ❯ QueryPromise.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_DUP_ENTRY', errno: 1062, sql: 'insert into `invoices` (`id`, `invoiceNumber`, `customerId`, `vendorId`, `amount`, `tax`, `totalAmount`, `status`, `issueDate`, `dueDate`, `description`, `notes`, `createdBy`, `createdAt`, `updatedAt`) values (default, \'INV-001\', default, default, \'1000\', \'100\', \'1100\', default, \'2026-03-10 13:57:40.432\', \'2026-04-09 13:57:40.432\', \'Test Invoice\', default, 1, default, default)', sqlState: '23000', sqlMessage: 'Duplicate entry \'INV-001\' for key \'invoices.invoices_invoiceNumber_unique\'' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > inventory router > getLowStock returns low stock products
+TRPCError: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18
+ ❯ Module.getLowStockProducts server/db.ts:165:10
+    163|   const db = await getDb();
+    164|   if (!db) return [];
+    165|   return await db
+       |          ^
+    166|     .select()
+    167|     .from(products)
+ ❯ server/routers.ts:164:12
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint
+params: 
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18
+ ❯ Module.getLowStockProducts server/db.ts:165:10
+ ❯ server/routers.ts:164:12
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint', params: [] }
+Caused by: Error: Unknown column 'quantity' in 'where clause'
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29
+ ❯ MySqlSelectBase.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25
+ ❯ MySqlSelectBase.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_BAD_FIELD_ERROR', errno: 1054, sql: 'select `id`, `sku`, `name`, `category`, `description`, `unitPrice`, `currentStock`, `reorderPoint`, `reorderQuantity`, `supplierId`, `status`, `createdAt`, `updatedAt` from `products` where quantity <= reorderPoint', sqlState: '42S22', sqlMessage: 'Unknown column \'quantity\' in \'where clause\'' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  server/routers.test.ts > ERP Routers > project router > getProjects returns manager projects
+TRPCError: Failed query: select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?
+params: 1
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18
+ ❯ Module.getProjectsByManager server/db.ts:191:10
+    189|   const db = await getDb();
+    190|   if (!db) return [];
+    191|   return await db
+       |          ^
+    192|     .select()
+    193|     .from(projects)
+ ❯ server/routers.ts:270:12
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+Caused by: Error: Failed query: select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?
+params: 1
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:79:11
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:18
+ ❯ Module.getProjectsByManager server/db.ts:191:10
+ ❯ server/routers.ts:270:12
+ ❯ resolveMiddleware node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:571:22
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ callRecursive node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:633:20
+ ❯ procedure node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/procedureBuilder.ts:673:20
+ ❯ node_modules/.pnpm/@trpc+server@11.6.0_typescript@5.9.3/node_modules/@trpc/server/src/unstable-core-do-not-import/router.ts:474:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = ?', params: [ 1 ] }
+Caused by: Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '= 1' at line 1
+ ❯ PromisePool.query node_modules/.pnpm/mysql2@3.15.1/node_modules/mysql2/lib/promise/pool.js:36:22
+ ❯ node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:133:24
+ ❯ MySql2PreparedQuery.queryWithCache node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/session.ts:77:18
+ ❯ MySql2PreparedQuery.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql2/session.ts:132:29
+ ❯ MySqlSelectBase.execute node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/mysql-core/query-builders/select.ts:1145:25
+ ❯ MySqlSelectBase.then node_modules/.pnpm/drizzle-orm@0.44.6_mysql2@3.15.1/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ER_PARSE_ERROR', errno: 1064, sql: 'select `id`, `name`, `description`, `startDate`, `endDate`, `budget`, `status`, `projectManager`, `createdAt`, `updatedAt` from `projects` where  = 1', sqlState: '42000', sqlMessage: 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'= 1\' at line 1' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate inventory insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:103:32
+    101| 
+    102|       expect(response).toBeDefined();
+    103|       expect(response.success).toBe(true);
+       |                                ^
+    104|       expect(response.module).toBe("inventory");
+    105|       expect(response.insights).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > generateInsights > should generate project insights
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:130:32
+    128| 
+    129|       expect(response).toBeDefined();
+    130|       expect(response.success).toBe(true);
+       |                                ^
+    131|       expect(response.module).toBe("projects");
+    132|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  server/routers/aiAssistant.test.ts > AI Assistant Router > getPredictions > should generate inventory predictions
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ server/routers/aiAssistant.test.ts:190:32
+    188| 
+    189|       expect(response).toBeDefined();
+    190|       expect(response.success).toBe(true);
+       |                                ^
+    191|       expect(response.category).toBe("inventory");
+    192|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  6 failed | 51 passed (57)
+   Start at  13:57:39
+   Duration  1.01s (transform 263ms, setup 112ms, collect 2.97s, tests 509ms, environment 0ms, prepare 354ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

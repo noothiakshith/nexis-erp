@@ -160,7 +160,7 @@ export async function predictInventoryDemand(): Promise<InventoryPrediction[]> {
       .select({
         id: products.id,
         name: products.name,
-        currentStock: products.stockLevel,
+        currentStock: products.currentStock,
         reorderPoint: products.reorderPoint,
       })
       .from(products)
@@ -358,7 +358,7 @@ Generate a brief executive summary with key insights and recommendations.
       forecasts,
       predictions,
       anomalies,
-      summary: response.choices[0]?.message.content || "No summary available",
+      summary: typeof response.choices[0]?.message.content === "string" ? response.choices[0]?.message.content : "No summary available",
     };
   } catch (error) {
     console.error("Error generating predictive insights:", error);

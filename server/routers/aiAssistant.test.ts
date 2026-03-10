@@ -10,8 +10,11 @@ function createAuthContext(userId: number = 1): TrpcContext {
     openId: `user-${userId}`,
     email: `user${userId}@example.com`,
     name: `Test User ${userId}`,
-    loginMethod: "manus",
+    phone: null,
+    department: null,
+    loginMethod: "google",
     role: "manager",
+    isActive: true,
     createdAt: new Date(),
     updatedAt: new Date(),
     lastSignedIn: new Date(),
@@ -22,10 +25,10 @@ function createAuthContext(userId: number = 1): TrpcContext {
     req: {
       protocol: "https",
       headers: {},
-    } as TrpcContext["req"],
+    } as any,
     res: {
-      clearCookie: () => {},
-    } as TrpcContext["res"],
+      clearCookie: () => { },
+    } as any,
   };
 }
 

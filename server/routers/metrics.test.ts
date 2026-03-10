@@ -14,6 +14,9 @@ function createAuthContext(): {
     name: "Test User",
     loginMethod: "manus",
     role: "admin",
+    phone: null,
+    department: null,
+    isActive: true,
     createdAt: new Date(),
     updatedAt: new Date(),
     lastSignedIn: new Date(),
@@ -24,8 +27,8 @@ function createAuthContext(): {
     req: {
       protocol: "https",
       headers: { "x-forwarded-for": "192.168.1.1" },
-    } as TrpcContext["req"],
-    res: {} as TrpcContext["res"],
+    } as any as TrpcContext["req"],
+    res: {} as any as TrpcContext["res"],
   };
 
   return { ctx };

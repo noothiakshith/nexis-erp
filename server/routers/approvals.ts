@@ -11,7 +11,7 @@ import {
   employees,
   users,
 } from "../../drizzle/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte } from "drizzle-orm";
 import { sendApprovalEmail } from "../_core/emailService";
 
 /**
@@ -208,30 +208,81 @@ export const approvalsRouter = router({
 
           // Update the related request status
           const approvalData = approval[0];
+          let requestName = "";
           if (approvalData.requestType === "purchase_order") {
+            requestName = "Purchase Order";
             await db
               .update(purchaseOrders)
               .set({ status: "approved" })
               .where(eq(purchaseOrders.id, approvalData.requestId));
           } else if (approvalData.requestType === "leave_request") {
+            requestName = "Leave Request";
             await db
               .update(leaves)
               .set({ status: "approved", approvedBy: ctx.user.id })
               .where(eq(leaves.id, approvalData.requestId));
           } else if (approvalData.requestType === "expense_report") {
+            requestName = "Expense Report";
             await db
               .update(expenses)
               .set({ status: "approved" })
               .where(eq(expenses.id, approvalData.requestId));
           }
+
+          // Notify the requestor
+          const requestor = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, approvalData.requestorId))
+            .limit(1);
+
+          if (requestor.length && requestor[0].email) {
+            await sendApprovalEmail({
+              to: requestor[0].email,
+              template: "approval_approved",
+              data: {
+                requestType: requestName,
+                requestId: approvalData.requestId,
+                approverName: ctx.user.name || "System Manager",
+                approvedAt: new Date(),
+              },
+            });
+          }
         } else {
           // Move to next step
-          const nextStep = allSteps.find((s) => s.stepNumber > (input.stepId as any));
+          const nextStep = allSteps.find((s) => s.stepNumber === approval[0].currentStep + 1);
           if (nextStep) {
             await db
               .update(approvals)
               .set({ currentStep: nextStep.stepNumber })
               .where(eq(approvals.id, input.approvalId));
+
+            // Notify the next approver if assigned
+            if (nextStep.assignedTo) {
+              const nextUser = await db
+                .select()
+                .from(users)
+                .where(eq(users.id, nextStep.assignedTo))
+                .limit(1);
+
+              if (nextUser.length && nextUser[0].email) {
+                // Here we would choose the template based on the type
+                const approvalData = approval[0];
+                const template = approvalData.requestType === "purchase_order" ? "po_pending_approval" :
+                  approvalData.requestType === "leave_request" ? "leave_pending_approval" :
+                    "expense_pending_approval";
+
+                await sendApprovalEmail({
+                  to: nextUser[0].email,
+                  template: template as any,
+                  data: {
+                    ...approvalData,
+                    approvalUrl: `http://localhost:3000/approvals/${input.approvalId}`,
+                    // Additional info would be fetched here
+                  },
+                });
+              }
+            }
           }
         }
 
@@ -296,21 +347,46 @@ export const approvalsRouter = router({
 
         if (approval.length) {
           const approvalData = approval[0];
+          let requestName = "";
           if (approvalData.requestType === "purchase_order") {
+            requestName = "Purchase Order";
             await db
               .update(purchaseOrders)
               .set({ status: "draft" })
               .where(eq(purchaseOrders.id, approvalData.requestId));
           } else if (approvalData.requestType === "leave_request") {
+            requestName = "Leave Request";
             await db
               .update(leaves)
               .set({ status: "rejected" })
               .where(eq(leaves.id, approvalData.requestId));
           } else if (approvalData.requestType === "expense_report") {
+            requestName = "Expense Report";
             await db
               .update(expenses)
               .set({ status: "rejected" })
               .where(eq(expenses.id, approvalData.requestId));
+          }
+
+          // Notify requestor of rejection
+          const requestor = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, approvalData.requestorId))
+            .limit(1);
+
+          if (requestor.length && requestor[0].email) {
+            await sendApprovalEmail({
+              to: requestor[0].email,
+              template: "approval_rejected",
+              data: {
+                requestType: requestName,
+                requestId: approvalData.requestId,
+                approverName: ctx.user.name || "System Manager",
+                rejectionReason: input.rejectionReason,
+                revisionUrl: `http://localhost:3000/${approvalData.requestType.replace('_', '-')}/${approvalData.requestId}`,
+              },
+            });
           }
         }
 
@@ -418,8 +494,24 @@ export const approvalsRouter = router({
         ).length,
       };
 
+      // Get approved today count
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const approvedToday = await db
+        .select()
+        .from(approvalSteps)
+        .where(
+          and(
+            eq(approvalSteps.assignedTo, ctx.user.id),
+            eq(approvalSteps.status, "approved"),
+            gte(approvalSteps.approvedAt, today)
+          )
+        );
+
       return {
         totalPending: pendingCount.length,
+        history: approvedToday.length,
         breakdown,
       };
     } catch (error) {

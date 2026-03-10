@@ -116,7 +116,7 @@ export const predictiveAnalyticsRouter = router({
         timeframe: z.enum(["month", "quarter", "year"]).default("month"),
       })
     )
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       let report;
 
       switch (input.reportType) {
@@ -158,7 +158,7 @@ export const predictiveAnalyticsRouter = router({
         timeframe: z.enum(["month", "quarter", "year"]).default("month"),
       })
     )
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       let report;
 
       switch (input.reportType) {
