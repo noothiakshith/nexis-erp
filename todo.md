@@ -109,3 +109,16 @@
 - [ ] Performance testing
 - [ ] Security audit
 - [ ] Final deployment preparation
+
+
+## Phase 15: Multi-Step Approval Workflows
+- [x] Approval workflow database schema (approvals, approval steps, audit logs)
+- [x] Purchase order approval workflow (department manager -> finance -> executive)
+- [x] Leave request approval workflow (direct manager -> HR -> final approval)
+- [x] Expense report approval workflow (department manager -> finance -> executive)
+- [x] Email notification system with templates
+- [x] Approval dashboard with pending items
+- [x] Workflow status tracking and history
+- [x] Audit trail logging for all approvals
+- [x] Approval rules engine and routing logic
+- [x] Rejection and revision workflows

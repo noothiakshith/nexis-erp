@@ -15,6 +15,7 @@ import Procurement from "./pages/Procurement";
 import Analytics from "./pages/Analytics";
 import Documents from "./pages/Documents";
 import Settings from "./pages/Settings";
+import Approvals from "./pages/Approvals";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path={"/analytics"} component={Analytics} />
       <Route path={"/documents"} component={Documents} />
       <Route path={"/settings"} component={Settings} />
+      <Route path={"/approvals"} component={Approvals} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

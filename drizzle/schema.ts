@@ -48,7 +48,7 @@ export const invoices = mysqlTable("invoices", {
   dueDate: date("dueDate").notNull(),
   description: text("description"),
   notes: text("notes"),
-  createdBy: int("createdBy").notNull(),
+  createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -61,11 +61,10 @@ export const expenses = mysqlTable("expenses", {
   description: varchar("description", { length: 255 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
   amount: decimal("amount", { precision: 15, scale: 2 }).notNull(),
-  status: mysqlEnum("status", ["pending", "approved", "rejected", "reimbursed"]).default("pending").notNull(),
   expenseDate: date("expenseDate").notNull(),
-  submittedBy: int("submittedBy").notNull(),
-  approvedBy: int("approvedBy"),
   notes: text("notes"),
+  status: mysqlEnum("status", ["draft", "submitted", "approved", "rejected", "paid"]).default("draft").notNull(),
+  submittedBy: int("submittedBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -77,11 +76,10 @@ export const budgets = mysqlTable("budgets", {
   id: int("id").autoincrement().primaryKey(),
   department: varchar("department", { length: 100 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(),
-  allocatedAmount: decimal("allocatedAmount", { precision: 15, scale: 2 }).notNull(),
+  budgetAmount: decimal("budgetAmount", { precision: 15, scale: 2 }).notNull(),
   spentAmount: decimal("spentAmount", { precision: 15, scale: 2 }).default("0"),
-  year: int("year").notNull(),
-  month: int("month"),
-  status: mysqlEnum("status", ["active", "archived"]).default("active").notNull(),
+  fiscalYear: int("fiscalYear").notNull(),
+  status: mysqlEnum("status", ["draft", "approved", "active", "closed"]).default("draft").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -92,19 +90,18 @@ export type InsertBudget = typeof budgets.$inferInsert;
 // ==================== HR MODULE ====================
 export const employees = mysqlTable("employees", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().unique(),
-  employeeId: varchar("employeeId", { length: 50 }).notNull().unique(),
+  userId: int("userId"),
   firstName: varchar("firstName", { length: 100 }).notNull(),
   lastName: varchar("lastName", { length: 100 }).notNull(),
-  email: varchar("email", { length: 320 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).unique(),
   phone: varchar("phone", { length: 20 }),
-  dateOfBirth: date("dateOfBirth"),
-  joinDate: date("joinDate").notNull(),
   department: varchar("department", { length: 100 }).notNull(),
   position: varchar("position", { length: 100 }).notNull(),
+  reportingManager: int("reportingManager"),
+  joinDate: date("joinDate").notNull(),
   salary: decimal("salary", { precision: 15, scale: 2 }),
+  employmentType: mysqlEnum("employmentType", ["full_time", "part_time", "contract", "intern"]).default("full_time").notNull(),
   status: mysqlEnum("status", ["active", "inactive", "on_leave", "terminated"]).default("active").notNull(),
-  manager: int("manager"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -112,16 +109,31 @@ export const employees = mysqlTable("employees", {
 export type Employee = typeof employees.$inferSelect;
 export type InsertEmployee = typeof employees.$inferInsert;
 
+export const payroll = mysqlTable("payroll", {
+  id: int("id").autoincrement().primaryKey(),
+  employeeId: int("employeeId").notNull(),
+  payPeriod: varchar("payPeriod", { length: 50 }).notNull(),
+  baseSalary: decimal("baseSalary", { precision: 15, scale: 2 }).notNull(),
+  bonuses: decimal("bonuses", { precision: 15, scale: 2 }).default("0"),
+  deductions: decimal("deductions", { precision: 15, scale: 2 }).default("0"),
+  netSalary: decimal("netSalary", { precision: 15, scale: 2 }).notNull(),
+  status: mysqlEnum("status", ["draft", "processed", "paid"]).default("draft").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Payroll = typeof payroll.$inferSelect;
+export type InsertPayroll = typeof payroll.$inferInsert;
+
 export const attendance = mysqlTable("attendance", {
   id: int("id").autoincrement().primaryKey(),
   employeeId: int("employeeId").notNull(),
   date: date("date").notNull(),
-  checkInTime: time("checkInTime"),
-  checkOutTime: time("checkOutTime"),
-  status: mysqlEnum("status", ["present", "absent", "late", "half_day", "work_from_home"]).notNull(),
+  checkIn: time("checkIn"),
+  checkOut: time("checkOut"),
+  status: mysqlEnum("status", ["present", "absent", "late", "half_day"]).default("present").notNull(),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
 export type Attendance = typeof attendance.$inferSelect;
@@ -130,13 +142,12 @@ export type InsertAttendance = typeof attendance.$inferInsert;
 export const leaves = mysqlTable("leaves", {
   id: int("id").autoincrement().primaryKey(),
   employeeId: int("employeeId").notNull(),
-  leaveType: mysqlEnum("leaveType", ["annual", "sick", "maternity", "paternity", "unpaid", "other"]).notNull(),
+  leaveType: varchar("leaveType", { length: 100 }).notNull(),
   startDate: date("startDate").notNull(),
   endDate: date("endDate").notNull(),
   reason: text("reason"),
   status: mysqlEnum("status", ["pending", "approved", "rejected", "cancelled"]).default("pending").notNull(),
   approvedBy: int("approvedBy"),
-  approvalDate: timestamp("approvalDate"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -144,37 +155,18 @@ export const leaves = mysqlTable("leaves", {
 export type Leave = typeof leaves.$inferSelect;
 export type InsertLeave = typeof leaves.$inferInsert;
 
-export const payroll = mysqlTable("payroll", {
-  id: int("id").autoincrement().primaryKey(),
-  employeeId: int("employeeId").notNull(),
-  month: int("month").notNull(),
-  year: int("year").notNull(),
-  baseSalary: decimal("baseSalary", { precision: 15, scale: 2 }).notNull(),
-  allowances: decimal("allowances", { precision: 15, scale: 2 }).default("0"),
-  deductions: decimal("deductions", { precision: 15, scale: 2 }).default("0"),
-  netSalary: decimal("netSalary", { precision: 15, scale: 2 }).notNull(),
-  status: mysqlEnum("status", ["draft", "processed", "paid"]).default("draft").notNull(),
-  processedAt: timestamp("processedAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type Payroll = typeof payroll.$inferSelect;
-export type InsertPayroll = typeof payroll.$inferInsert;
-
 // ==================== INVENTORY MODULE ====================
 export const products = mysqlTable("products", {
   id: int("id").autoincrement().primaryKey(),
   sku: varchar("sku", { length: 100 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
-  description: text("description"),
   category: varchar("category", { length: 100 }).notNull(),
+  description: text("description"),
   unitPrice: decimal("unitPrice", { precision: 15, scale: 2 }).notNull(),
-  quantity: int("quantity").default(0).notNull(),
+  currentStock: int("currentStock").default(0).notNull(),
   reorderPoint: int("reorderPoint").notNull(),
   reorderQuantity: int("reorderQuantity").notNull(),
-  warehouseLocation: varchar("warehouseLocation", { length: 100 }),
-  supplier: int("supplier"),
+  supplierId: int("supplierId"),
   status: mysqlEnum("status", ["active", "inactive", "discontinued"]).default("active").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -186,9 +178,9 @@ export type InsertProduct = typeof products.$inferInsert;
 export const inventory = mysqlTable("inventory", {
   id: int("id").autoincrement().primaryKey(),
   productId: int("productId").notNull(),
-  warehouseId: int("warehouseId").notNull(),
+  warehouseLocation: varchar("warehouseLocation", { length: 100 }),
   quantity: int("quantity").notNull(),
-  lastStockCheck: timestamp("lastStockCheck"),
+  lastCountDate: date("lastCountDate"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -199,11 +191,10 @@ export type InsertInventory = typeof inventory.$inferInsert;
 export const stockMovements = mysqlTable("stockMovements", {
   id: int("id").autoincrement().primaryKey(),
   productId: int("productId").notNull(),
-  movementType: mysqlEnum("movementType", ["in", "out", "adjustment", "return"]).notNull(),
+  movementType: mysqlEnum("movementType", ["in", "out", "adjustment"]).notNull(),
   quantity: int("quantity").notNull(),
   reference: varchar("reference", { length: 100 }),
   notes: text("notes"),
-  createdBy: int("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -213,7 +204,6 @@ export type InsertStockMovement = typeof stockMovements.$inferInsert;
 export const suppliers = mysqlTable("suppliers", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  contactPerson: varchar("contactPerson", { length: 255 }),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 20 }),
   address: text("address"),
@@ -221,7 +211,7 @@ export const suppliers = mysqlTable("suppliers", {
   country: varchar("country", { length: 100 }),
   paymentTerms: varchar("paymentTerms", { length: 100 }),
   rating: decimal("rating", { precision: 3, scale: 2 }),
-  status: mysqlEnum("status", ["active", "inactive"]).default("active").notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -233,17 +223,15 @@ export type InsertSupplier = typeof suppliers.$inferInsert;
 export const customers = mysqlTable("customers", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 320 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).unique(),
   phone: varchar("phone", { length: 20 }),
   company: varchar("company", { length: 255 }),
   address: text("address"),
   city: varchar("city", { length: 100 }),
   country: varchar("country", { length: 100 }),
   industry: varchar("industry", { length: 100 }),
-  customerType: mysqlEnum("customerType", ["prospect", "customer", "vip", "inactive"]).default("prospect").notNull(),
-  creditLimit: decimal("creditLimit", { precision: 15, scale: 2 }),
-  totalPurchases: decimal("totalPurchases", { precision: 15, scale: 2 }).default("0"),
-  lastInteraction: timestamp("lastInteraction"),
+  customerType: mysqlEnum("customerType", ["individual", "business"]).default("business").notNull(),
+  status: mysqlEnum("status", ["active", "inactive", "prospect"]).default("active").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -259,11 +247,8 @@ export const leads = mysqlTable("leads", {
   company: varchar("company", { length: 255 }),
   source: varchar("source", { length: 100 }),
   status: mysqlEnum("status", ["new", "contacted", "qualified", "proposal", "won", "lost"]).default("new").notNull(),
-  score: int("score").default(0),
+  value: decimal("value", { precision: 15, scale: 2 }),
   assignedTo: int("assignedTo"),
-  expectedValue: decimal("expectedValue", { precision: 15, scale: 2 }),
-  closingDate: date("closingDate"),
-  notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -275,11 +260,10 @@ export const interactions = mysqlTable("interactions", {
   id: int("id").autoincrement().primaryKey(),
   customerId: int("customerId"),
   leadId: int("leadId"),
-  type: mysqlEnum("type", ["call", "email", "meeting", "note", "task"]).notNull(),
+  type: varchar("type", { length: 100 }).notNull(),
   subject: varchar("subject", { length: 255 }).notNull(),
-  description: text("description"),
-  createdBy: int("createdBy").notNull(),
-  interactionDate: timestamp("interactionDate").notNull(),
+  notes: text("notes"),
+  createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -291,13 +275,11 @@ export const projects = mysqlTable("projects", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  status: mysqlEnum("status", ["planning", "active", "on_hold", "completed", "cancelled"]).default("planning").notNull(),
   startDate: date("startDate").notNull(),
   endDate: date("endDate").notNull(),
   budget: decimal("budget", { precision: 15, scale: 2 }),
-  spent: decimal("spent", { precision: 15, scale: 2 }).default("0"),
-  manager: int("manager").notNull(),
-  priority: mysqlEnum("priority", ["low", "medium", "high", "critical"]).default("medium").notNull(),
+  status: mysqlEnum("status", ["planning", "active", "on_hold", "completed", "cancelled"]).default("planning").notNull(),
+  projectManager: int("projectManager"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -310,13 +292,10 @@ export const tasks = mysqlTable("tasks", {
   projectId: int("projectId").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
-  status: mysqlEnum("status", ["todo", "in_progress", "review", "completed", "blocked"]).default("todo").notNull(),
-  priority: mysqlEnum("priority", ["low", "medium", "high", "critical"]).default("medium").notNull(),
   assignedTo: int("assignedTo"),
   dueDate: date("dueDate"),
-  estimatedHours: decimal("estimatedHours", { precision: 10, scale: 2 }),
-  actualHours: decimal("actualHours", { precision: 10, scale: 2 }),
-  progress: int("progress").default(0),
+  priority: mysqlEnum("priority", ["low", "medium", "high", "critical"]).default("medium").notNull(),
+  status: mysqlEnum("status", ["todo", "in_progress", "review", "completed", "cancelled"]).default("todo").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -329,9 +308,8 @@ export const milestones = mysqlTable("milestones", {
   projectId: int("projectId").notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  dueDate: date("dueDate").notNull(),
-  status: mysqlEnum("status", ["pending", "completed", "at_risk"]).default("pending").notNull(),
-  deliverables: text("deliverables"),
+  targetDate: date("targetDate").notNull(),
+  status: mysqlEnum("status", ["pending", "in_progress", "completed"]).default("pending").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -344,13 +322,12 @@ export const purchaseOrders = mysqlTable("purchaseOrders", {
   id: int("id").autoincrement().primaryKey(),
   poNumber: varchar("poNumber", { length: 50 }).notNull().unique(),
   supplierId: int("supplierId").notNull(),
-  status: mysqlEnum("status", ["draft", "pending", "approved", "received", "cancelled"]).default("draft").notNull(),
-  orderDate: date("orderDate").notNull(),
-  expectedDeliveryDate: date("expectedDeliveryDate"),
   totalAmount: decimal("totalAmount", { precision: 15, scale: 2 }).notNull(),
-  createdBy: int("createdBy").notNull(),
-  approvedBy: int("approvedBy"),
-  notes: text("notes"),
+  tax: decimal("tax", { precision: 15, scale: 2 }).default("0"),
+  status: mysqlEnum("status", ["draft", "pending_approval", "approved", "sent", "received", "cancelled"]).default("draft").notNull(),
+  orderDate: date("orderDate").notNull(),
+  expectedDelivery: date("expectedDelivery"),
+  createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -361,27 +338,24 @@ export type InsertPurchaseOrder = typeof purchaseOrders.$inferInsert;
 export const poItems = mysqlTable("poItems", {
   id: int("id").autoincrement().primaryKey(),
   poId: int("poId").notNull(),
-  productId: int("productId").notNull(),
+  productId: int("productId"),
+  description: varchar("description", { length: 255 }).notNull(),
   quantity: int("quantity").notNull(),
   unitPrice: decimal("unitPrice", { precision: 15, scale: 2 }).notNull(),
   totalPrice: decimal("totalPrice", { precision: 15, scale: 2 }).notNull(),
-  receivedQuantity: int("receivedQuantity").default(0),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export type POItem = typeof poItems.$inferSelect;
 export type InsertPOItem = typeof poItems.$inferInsert;
 
-// ==================== AI & ANALYTICS MODULE ====================
+// ==================== ANALYTICS & PREDICTIONS ====================
 export const analyticsData = mysqlTable("analyticsData", {
   id: int("id").autoincrement().primaryKey(),
-  dataType: varchar("dataType", { length: 100 }).notNull(),
   module: varchar("module", { length: 100 }).notNull(),
-  metric: varchar("metric", { length: 255 }).notNull(),
-  value: decimal("value", { precision: 20, scale: 2 }),
+  metric: varchar("metric", { length: 100 }).notNull(),
+  value: decimal("value", { precision: 15, scale: 2 }).notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
   metadata: json("metadata"),
-  recordDate: timestamp("recordDate").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
 export type AnalyticsData = typeof analyticsData.$inferSelect;
@@ -389,11 +363,10 @@ export type InsertAnalyticsData = typeof analyticsData.$inferInsert;
 
 export const predictions = mysqlTable("predictions", {
   id: int("id").autoincrement().primaryKey(),
-  predictionType: varchar("predictionType", { length: 100 }).notNull(),
-  module: varchar("module", { length: 100 }).notNull(),
-  targetValue: varchar("targetValue", { length: 255 }).notNull(),
-  predictedValue: text("predictedValue"),
-  confidence: decimal("confidence", { precision: 5, scale: 2 }),
+  category: varchar("category", { length: 100 }).notNull(),
+  prediction: text("prediction").notNull(),
+  confidence: decimal("confidence", { precision: 3, scale: 2 }),
+  timeframe: varchar("timeframe", { length: 100 }),
   status: mysqlEnum("status", ["active", "archived"]).default("active").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -522,3 +495,65 @@ export const auditLog = mysqlTable("auditLog", {
 
 export type AuditLog = typeof auditLog.$inferSelect;
 export type InsertAuditLog = typeof auditLog.$inferInsert;
+
+// ==================== APPROVAL WORKFLOWS ====================
+export const approvals = mysqlTable("approvals", {
+  id: int("id").autoincrement().primaryKey(),
+  requestType: mysqlEnum("requestType", ["purchase_order", "leave_request", "expense_report"]).notNull(),
+  requestId: int("requestId").notNull(),
+  requestorId: int("requestorId").notNull(),
+  currentStep: int("currentStep").default(1).notNull(),
+  totalSteps: int("totalSteps").notNull(),
+  status: mysqlEnum("status", ["pending", "approved", "rejected", "cancelled"]).default("pending").notNull(),
+  rejectionReason: text("rejectionReason"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  completedAt: timestamp("completedAt"),
+});
+
+export type Approval = typeof approvals.$inferSelect;
+export type InsertApproval = typeof approvals.$inferInsert;
+
+export const approvalSteps = mysqlTable("approvalSteps", {
+  id: int("id").autoincrement().primaryKey(),
+  approvalId: int("approvalId").notNull(),
+  stepNumber: int("stepNumber").notNull(),
+  approverRole: varchar("approverRole", { length: 100 }).notNull(),
+  assignedTo: int("assignedTo"),
+  status: mysqlEnum("status", ["pending", "approved", "rejected"]).default("pending").notNull(),
+  comments: text("comments"),
+  approvedAt: timestamp("approvedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ApprovalStep = typeof approvalSteps.$inferSelect;
+export type InsertApprovalStep = typeof approvalSteps.$inferInsert;
+
+export const approvalAudit = mysqlTable("approvalAudit", {
+  id: int("id").autoincrement().primaryKey(),
+  approvalId: int("approvalId").notNull(),
+  action: varchar("action", { length: 100 }).notNull(),
+  performedBy: int("performedBy").notNull(),
+  details: json("details"),
+  ipAddress: varchar("ipAddress", { length: 45 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ApprovalAudit = typeof approvalAudit.$inferSelect;
+export type InsertApprovalAudit = typeof approvalAudit.$inferInsert;
+
+export const emailLogs = mysqlTable("emailLogs", {
+  id: int("id").autoincrement().primaryKey(),
+  recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  template: varchar("template", { length: 100 }).notNull(),
+  relatedType: varchar("relatedType", { length: 100 }),
+  relatedId: int("relatedId"),
+  status: mysqlEnum("status", ["pending", "sent", "failed"]).default("pending").notNull(),
+  errorMessage: text("errorMessage"),
+  sentAt: timestamp("sentAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailLog = typeof emailLogs.$inferSelect;
+export type InsertEmailLog = typeof emailLogs.$inferInsert;

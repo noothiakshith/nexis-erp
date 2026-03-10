@@ -3,6 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiAssistantRouter } from "./routers/aiAssistant";
+import { approvalsRouter } from "./routers/approvals";
 import { z } from "zod";
 import {
   getEmployeeByUserId,
@@ -432,6 +433,7 @@ export const appRouter = router({
   analytics: analyticsRouter,
   documents: documentsRouter,
   aiAssistant: aiAssistantRouter,
+  approvals: approvalsRouter,
 });
 
 export type AppRouter = typeof appRouter;
