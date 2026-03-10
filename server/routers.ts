@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiAssistantRouter } from "./routers/aiAssistant";
 import { approvalsRouter } from "./routers/approvals";
+import { metricsRouter } from "./routers/metrics";
 import { z } from "zod";
 import {
   getEmployeeByUserId,
@@ -434,6 +435,7 @@ export const appRouter = router({
   documents: documentsRouter,
   aiAssistant: aiAssistantRouter,
   approvals: approvalsRouter,
+  metrics: metricsRouter,
 });
 
 export type AppRouter = typeof appRouter;
