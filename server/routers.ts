@@ -6,6 +6,7 @@ import { aiAssistantRouter } from "./routers/aiAssistant";
 import { approvalsRouter } from "./routers/approvals";
 import { metricsRouter } from "./routers/metrics";
 import { advancedAnalyticsRouter } from "./routers/advancedAnalytics";
+import { predictiveAnalyticsRouter } from "./routers/predictiveAnalyticsRouter";
 import { z } from "zod";
 import {
   getEmployeeByUserId,
@@ -438,6 +439,7 @@ export const appRouter = router({
   approvals: approvalsRouter,
   metrics: metricsRouter,
   advancedAnalytics: advancedAnalyticsRouter,
+  predictiveAnalytics: predictiveAnalyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;
