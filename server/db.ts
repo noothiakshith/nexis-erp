@@ -1,7 +1,23 @@
-import { eq } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  InsertUser,
+  users,
+  employees,
+  invoices,
+  expenses,
+  products,
+  customers,
+  leads,
+  projects,
+  tasks,
+  purchaseOrders,
+  alerts,
+  analyticsData,
+  anomalies,
+  documents,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -56,8 +72,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -84,9 +100,175 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ==================== EMPLOYEE QUERIES ====================
+export async function getEmployeeByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(employees)
+    .where(eq(employees.userId, userId))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAllEmployees() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(employees)
+    .where(eq(employees.status, "active"));
+}
+
+// ==================== FINANCE QUERIES ====================
+export async function getInvoicesByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(invoices)
+    .where(eq(invoices.createdBy, userId));
+}
+
+export async function getExpensesByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(expenses)
+    .where(eq(expenses.submittedBy, userId));
+}
+
+// ==================== INVENTORY QUERIES ====================
+export async function getProductsByStatus(status: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(products)
+    .where(eq(products.status, status as any));
+}
+
+export async function getLowStockProducts(reorderThreshold: number = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(products)
+    .where(sql`quantity <= reorderPoint`);
+}
+
+// ==================== CRM QUERIES ====================
+export async function getCustomersByType(customerType: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(customers)
+    .where(eq(customers.customerType, customerType as any));
+}
+
+export async function getLeadsByStatus(status: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(leads).where(eq(leads.status, status as any));
+}
+
+// ==================== PROJECT QUERIES ====================
+export async function getProjectsByManager(managerId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(projects)
+    .where(eq(projects.manager, managerId));
+}
+
+export async function getTasksByProject(projectId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(tasks).where(eq(tasks.projectId, projectId));
+}
+
+// ==================== PROCUREMENT QUERIES ====================
+export async function getPurchaseOrdersBySupplier(supplierId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(purchaseOrders)
+    .where(eq(purchaseOrders.supplierId, supplierId));
+}
+
+// ==================== ALERTS QUERIES ====================
+export async function getAlertsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(alerts)
+    .where(eq(alerts.userId, userId))
+    .orderBy(sql`createdAt DESC`);
+}
+
+export async function getUnreadAlerts(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(alerts)
+    .where(and(eq(alerts.userId, userId), eq(alerts.status, "unread")));
+}
+
+// ==================== ANALYTICS QUERIES ====================
+export async function getAnalyticsDataByModule(module: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(analyticsData)
+    .where(eq(analyticsData.module, module));
+}
+
+export async function getAnomaliesByModule(module: string) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db
+    .select()
+    .from(anomalies)
+    .where(eq(anomalies.module, module));
+}
+
+// ==================== DOCUMENT QUERIES ====================
+export async function getDocumentsByModule(
+  module: string,
+  relatedId?: number
+) {
+  const db = await getDb();
+  if (!db) return [];
+  if (relatedId) {
+    return await db
+      .select()
+      .from(documents)
+      .where(
+        and(
+          eq(documents.relatedModule, module),
+          eq(documents.relatedId, relatedId)
+        )
+      );
+  }
+  return await db
+    .select()
+    .from(documents)
+    .where(eq(documents.relatedModule, module));
+}
