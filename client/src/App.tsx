@@ -17,6 +17,8 @@ import Analytics from "./pages/Analytics";
 import Documents from "./pages/Documents";
 import Settings from "./pages/Settings";
 import Approvals from "./pages/Approvals";
+import FinancialAnalytics from "./pages/FinancialAnalytics";
+import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 
 function Router() {
   return (
@@ -34,6 +36,8 @@ function Router() {
       <Route path={"/documents"} component={Documents} />
       <Route path={"/settings"} component={Settings} />
       <Route path={"/approvals"} component={Approvals} />
+      <Route path={"/financial-analytics"} component={FinancialAnalytics} />
+      <Route path={"/advanced-analytics"} component={AdvancedAnalytics} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -5,6 +5,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { aiAssistantRouter } from "./routers/aiAssistant";
 import { approvalsRouter } from "./routers/approvals";
 import { metricsRouter } from "./routers/metrics";
+import { advancedAnalyticsRouter } from "./routers/advancedAnalytics";
 import { z } from "zod";
 import {
   getEmployeeByUserId,
@@ -436,6 +437,7 @@ export const appRouter = router({
   aiAssistant: aiAssistantRouter,
   approvals: approvalsRouter,
   metrics: metricsRouter,
+  advancedAnalytics: advancedAnalyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;
