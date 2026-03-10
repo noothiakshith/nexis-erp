@@ -7,6 +7,8 @@ import { approvalsRouter } from "./routers/approvals";
 import { metricsRouter } from "./routers/metrics";
 import { advancedAnalyticsRouter } from "./routers/advancedAnalytics";
 import { predictiveAnalyticsRouter } from "./routers/predictiveAnalyticsRouter";
+import { scheduledReportsRouter } from "./routers/scheduledReports";
+import { supplierRouter, stockMovementRouter, warehouseRouter, inventoryAnalyticsRouter } from "./routers/inventoryRouter";
 import { z } from "zod";
 import {
   getEmployeeByUserId,
@@ -84,16 +86,15 @@ const employeeRouter = router({
       return result;
     }),
 
-  getLeaves: protectedProcedure.query(async ({ ctx }) => {
+  getLeaves: protectedProcedure.query(async () => {
     const db = await getDb();
     if (!db) return [];
-    const emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
-    if (!emp.length) return [];
-    return await db.select().from(leaves).where(eq(leaves.employeeId, emp[0].id));
+    return await db.select().from(leaves);
   }),
 
   submitLeaveRequest: protectedProcedure
     .input(z.object({
+      employeeId: z.number().optional(),
       leaveType: z.string(),
       startDate: z.string(),
       endDate: z.string(),
@@ -103,28 +104,35 @@ const employeeRouter = router({
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
-      let emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
+      let emp;
 
-      if (!emp.length) {
-        // Auto-create a placeholder employee record for the current user if missing
-        const names = ctx.user.name?.split(' ') || ["Staff", "Member"];
-        const firstName = names[0];
-        const lastName = names.length > 1 ? names.slice(1).join(' ') : "System";
+      if (input.employeeId) {
+        emp = await db.select().from(employees).where(eq(employees.id, input.employeeId)).limit(1);
+        if (!emp.length) throw new Error("Selected employee not found");
+      } else {
+        emp = await db.select().from(employees).where(eq(employees.userId, ctx.user.id)).limit(1);
 
-        const newEmpRes = await db.insert(employees).values({
-          userId: ctx.user.id,
-          firstName,
-          lastName,
-          email: ctx.user.email || `user${ctx.user.id}@nexis.local`,
-          department: "General",
-          position: "Staff",
-          joinDate: new Date(),
-          status: "active",
-        });
+        if (!emp.length) {
+          // Auto-create a placeholder employee record for the current user if missing
+          const names = ctx.user.name?.split(' ') || ["Staff", "Member"];
+          const firstName = names[0];
+          const lastName = names.length > 1 ? names.slice(1).join(' ') : "System";
 
-        const newEmpId = newEmpRes[0].insertId;
-        const newEmp = await db.select().from(employees).where(eq(employees.id, newEmpId as any)).limit(1);
-        emp = newEmp;
+          const newEmpRes = await db.insert(employees).values({
+            userId: ctx.user.id,
+            firstName,
+            lastName,
+            email: ctx.user.email || `user${ctx.user.id}@nexis.local`,
+            department: "General",
+            position: "Staff",
+            joinDate: new Date(),
+            status: "active",
+          });
+
+          const newEmpId = newEmpRes[0].insertId;
+          const newEmp = await db.select().from(employees).where(eq(employees.id, newEmpId as any)).limit(1);
+          emp = newEmp;
+        }
       }
 
       if (!emp.length) throw new Error("Could not create employee profile automatically");
@@ -642,6 +650,11 @@ export const appRouter = router({
   metrics: metricsRouter,
   advancedAnalytics: advancedAnalyticsRouter,
   predictiveAnalytics: predictiveAnalyticsRouter,
+  scheduledReports: scheduledReportsRouter,
+  suppliers: supplierRouter,
+  stockMovements: stockMovementRouter,
+  warehouse: warehouseRouter,
+  inventoryAnalytics: inventoryAnalyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;

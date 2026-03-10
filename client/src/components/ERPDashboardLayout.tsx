@@ -45,15 +45,15 @@ export const ERPDashboardLayout: React.FC<ERPDashboardLayoutProps> = ({
     { label: "Procurement", href: "/procurement", icon: "🛒" },
     { label: "Analytics", href: "/analytics", icon: "📈" },
     { label: "Documents", href: "/documents", icon: "📄" },
+    { label: "Scheduled Reports", href: "/scheduled-reports", icon: "⏰" },
   ];
 
   return (
     <div className="flex h-screen bg-background text-foreground">
       {/* Sidebar */}
       <aside
-        className={`${
-          sidebarOpen ? "w-64" : "w-20"
-        } bg-slate-900 text-white transition-all duration-300 flex flex-col border-r border-slate-700`}
+        className={`${sidebarOpen ? "w-64" : "w-20"
+          } bg-slate-900 text-white transition-all duration-300 flex flex-col border-r border-slate-700`}
       >
         {/* Logo */}
         <div className="p-4 border-b border-slate-700 flex items-center justify-between">

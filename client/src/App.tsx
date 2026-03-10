@@ -20,6 +20,7 @@ import Approvals from "./pages/Approvals";
 import FinancialAnalytics from "./pages/FinancialAnalytics";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import PredictiveAnalytics from "./pages/PredictiveAnalytics";
+import ScheduledReports from "./pages/ScheduledReports";
 
 function Router() {
   return (
@@ -40,6 +41,7 @@ function Router() {
       <Route path={"/financial-analytics"} component={FinancialAnalytics} />
       <Route path={"/advanced-analytics"} component={AdvancedAnalytics} />
       <Route path={"/predictive-analytics"} component={PredictiveAnalytics} />
+      <Route path={"/scheduled-reports"} component={ScheduledReports} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

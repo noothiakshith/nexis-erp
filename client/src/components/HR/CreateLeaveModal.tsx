@@ -26,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 
 const leaveSchema = z.object({
+    employeeId: z.coerce.number().optional().or(z.literal("self")),
     leaveType: z.string().min(1, "Leave type is required"),
     startDate: z.string().min(1, "Start date is required"),
     endDate: z.string().min(1, "End date is required"),
@@ -48,12 +49,15 @@ export function CreateLeaveModal({
     const form = useForm<LeaveFormValues>({
         resolver: zodResolver(leaveSchema) as any,
         defaultValues: {
+            employeeId: "self",
             leaveType: "sick",
             startDate: new Date().toISOString().split("T")[0],
             endDate: new Date().toISOString().split("T")[0],
             reason: "",
         },
     });
+
+    const { data: employees } = trpc.employee.listAll.useQuery();
 
     const submitLeave = trpc.employee.submitLeaveRequest.useMutation({
         onSuccess: () => {
@@ -68,7 +72,11 @@ export function CreateLeaveModal({
     });
 
     const onSubmit = (values: LeaveFormValues) => {
-        submitLeave.mutate(values);
+        const submissionData = {
+            ...values,
+            employeeId: values.employeeId === "self" ? undefined : values.employeeId,
+        };
+        submitLeave.mutate(submissionData);
     };
 
     return (
@@ -83,6 +91,32 @@ export function CreateLeaveModal({
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                        <FormField
+                            control={form.control}
+                            name="employeeId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Employee (Optional)</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value?.toString()}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select employee" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="self">Current User</SelectItem>
+                                            {employees?.map((emp) => (
+                                                <SelectItem key={emp.id} value={emp.id.toString()}>
+                                                    {emp.firstName} {emp.lastName}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
                         <FormField
                             control={form.control}
                             name="leaveType"
