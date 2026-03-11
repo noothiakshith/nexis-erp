@@ -167,6 +167,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: false, // Disable source maps in production
   },
   server: {
     host: true,
@@ -183,5 +184,9 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+  },
+  // Reduce source map warnings in development
+  define: {
+    __DEV__: JSON.stringify(process.env.NODE_ENV === 'development'),
   },
 });

@@ -87,6 +87,28 @@ export const budgets = mysqlTable("budgets", {
 export type Budget = typeof budgets.$inferSelect;
 export type InsertBudget = typeof budgets.$inferInsert;
 
+export const payments = mysqlTable("payments", {
+  id: int("id").autoincrement().primaryKey(),
+  reference: varchar("reference", { length: 50 }).notNull().unique(),
+  type: mysqlEnum("type", ["incoming", "outgoing"]).notNull(),
+  amount: decimal("amount", { precision: 15, scale: 2 }).notNull(),
+  method: mysqlEnum("method", ["bank_transfer", "credit_card", "cash", "check", "online"]).notNull(),
+  status: mysqlEnum("status", ["pending", "completed", "failed", "cancelled"]).default("pending").notNull(),
+  description: text("description"),
+  relatedInvoiceId: int("relatedInvoiceId"),
+  relatedExpenseId: int("relatedExpenseId"),
+  paymentDate: date("paymentDate").notNull(),
+  reconciled: boolean("reconciled").default(false).notNull(),
+  reconciledBy: int("reconciledBy"),
+  reconciledAt: timestamp("reconciledAt"),
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Payment = typeof payments.$inferSelect;
+export type InsertPayment = typeof payments.$inferInsert;
+
 // ==================== HR MODULE ====================
 export const employees = mysqlTable("employees", {
   id: int("id").autoincrement().primaryKey(),
@@ -316,6 +338,23 @@ export const milestones = mysqlTable("milestones", {
 
 export type Milestone = typeof milestones.$inferSelect;
 export type InsertMilestone = typeof milestones.$inferInsert;
+
+// ==================== RESOURCE ALLOCATION ====================
+export const resourceAllocations = mysqlTable("resourceAllocations", {
+  id: int("id").autoincrement().primaryKey(),
+  projectId: int("projectId").notNull(),
+  employeeId: int("employeeId").notNull(),
+  role: varchar("role", { length: 100 }).notNull(),
+  allocatedHours: int("allocatedHours").notNull(),
+  startDate: date("startDate").notNull(),
+  endDate: date("endDate"),
+  status: mysqlEnum("status", ["active", "completed", "on_hold"]).default("active").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ResourceAllocation = typeof resourceAllocations.$inferSelect;
+export type InsertResourceAllocation = typeof resourceAllocations.$inferInsert;
 
 // ==================== PROCUREMENT MODULE ====================
 export const purchaseOrders = mysqlTable("purchaseOrders", {

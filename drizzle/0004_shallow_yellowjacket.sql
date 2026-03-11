@@ -1,0 +1,20 @@
+CREATE TABLE `payments` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`reference` varchar(50) NOT NULL,
+	`type` enum('incoming','outgoing') NOT NULL,
+	`amount` decimal(15,2) NOT NULL,
+	`method` enum('bank_transfer','credit_card','cash','check','online') NOT NULL,
+	`status` enum('pending','completed','failed','cancelled') NOT NULL DEFAULT 'pending',
+	`description` text,
+	`relatedInvoiceId` int,
+	`relatedExpenseId` int,
+	`paymentDate` date NOT NULL,
+	`reconciled` boolean NOT NULL DEFAULT false,
+	`reconciledBy` int,
+	`reconciledAt` timestamp,
+	`createdBy` int,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `payments_id` PRIMARY KEY(`id`),
+	CONSTRAINT `payments_reference_unique` UNIQUE(`reference`)
+);

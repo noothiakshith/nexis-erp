@@ -22,6 +22,20 @@
       "when": 1773129888567,
       "tag": "0002_quiet_justin_hammer",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1773149955239,
+      "tag": "0003_gifted_george_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1773201787765,
+      "tag": "0004_shallow_yellowjacket",
+      "breakpoints": true
     }
   ]
 }

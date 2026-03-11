@@ -1,35 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import { ERPDashboardLayout } from "@/components/ERPDashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import { CreateInvoiceModal } from "@/components/Finance/CreateInvoiceModal";
 import { CreateExpenseModal } from "@/components/Finance/CreateExpenseModal";
+import { FinanceDashboard } from "@/components/Finance/FinanceDashboard";
+import { InvoiceManagement } from "@/components/Finance/InvoiceManagement";
+import { ExpenseManagement } from "@/components/Finance/ExpenseManagement";
+import { BudgetManagement } from "@/components/Finance/BudgetManagement";
+import { FinancialReports } from "@/components/Finance/FinancialReports";
+import { PaymentTracking } from "@/components/Finance/PaymentTracking";
+import { AIFinancialIntelligence } from "@/components/Finance/AIFinancialIntelligence";
+import { RealTimeCollaboration } from "@/components/Finance/RealTimeCollaboration";
+import { AdvancedFinancialAutomation } from "@/components/Finance/AdvancedFinancialAutomation";
+import { FinancialScenarioPlanning } from "@/components/Finance/FinancialScenarioPlanning";
+import { AdvancedFinancialAnalytics } from "@/components/Finance/AdvancedFinancialAnalytics";
+import { FinancialRiskManagement } from "@/components/Finance/FinancialRiskManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { FileText, CreditCard } from "lucide-react";
+import { 
+  FileText, 
+  CreditCard, 
+  BarChart3, 
+  Receipt, 
+  Target, 
+  TrendingUp, 
+  DollarSign,
+  Calculator,
+  Brain,
+  Users,
+  Bot,
+  LineChart,
+  Award,
+  Shield
+} from "lucide-react";
 
 export default function Finance() {
-  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = React.useState(false);
-  const [isExpenseModalOpen, setIsExpenseModalOpen] = React.useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   // Fetch real data to replace placeholders
   const { data: invoices, refetch: refetchInvoices } = trpc.finance.getInvoices.useQuery();
   const { data: expenses, refetch: refetchExpenses } = trpc.finance.getExpenses.useQuery();
 
-  const totalInvoices = invoices?.reduce((sum, inv) => sum + parseFloat(inv.totalAmount || "0"), 0) || 0;
-  const totalExpenses = expenses?.reduce((sum, exp) => sum + parseFloat(exp.amount || "0"), 0) || 0;
+  const handleInvoiceSuccess = () => {
+    refetchInvoices();
+  };
+
+  const handleExpenseSuccess = () => {
+    refetchExpenses();
+  };
 
   return (
     <ERPDashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center bg-white/50 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div className="space-y-6 max-w-7xl mx-auto pb-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/50 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-slate-200 gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-              Finance Module
+            <h1 className="text-3xl font-extrabold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent flex items-center gap-3">
+              <Calculator className="w-8 h-8 text-blue-600" />
+              Finance Management
             </h1>
-            <p className="text-slate-500 text-sm mt-1">Manage invoices, expenses and financial reports</p>
+            <p className="text-slate-500 text-sm mt-1">Comprehensive financial oversight and management tools</p>
           </div>
           <div className="flex gap-3">
             <Button
@@ -50,158 +83,117 @@ export default function Finance() {
           </div>
         </div>
 
-        <Tabs defaultValue="invoices" className="space-y-6">
-          <TabsList className="bg-slate-100/50 p-1 border border-slate-200">
-            <TabsTrigger value="invoices" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              Invoices
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="bg-white/50 border border-slate-200 p-1 rounded-xl shadow-sm inline-flex h-auto w-full overflow-x-auto justify-start">
+            <TabsTrigger value="dashboard" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <BarChart3 className="w-4 h-4" /> Dashboard
             </TabsTrigger>
-            <TabsTrigger value="expenses" className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4" />
-              Expense Reports
+            <TabsTrigger value="invoices" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <FileText className="w-4 h-4" /> Invoices
+            </TabsTrigger>
+            <TabsTrigger value="expenses" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <CreditCard className="w-4 h-4" /> Expenses
+            </TabsTrigger>
+            <TabsTrigger value="budgets" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Target className="w-4 h-4" /> Budgets
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TrendingUp className="w-4 h-4" /> Reports
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <DollarSign className="w-4 h-4" /> Payments
+            </TabsTrigger>
+            <TabsTrigger value="ai-intelligence" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Brain className="w-4 h-4" /> AI Intelligence
+            </TabsTrigger>
+            <TabsTrigger value="collaboration" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Users className="w-4 h-4" /> Collaboration
+            </TabsTrigger>
+            <TabsTrigger value="automation" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Bot className="w-4 h-4" /> Automation
+            </TabsTrigger>
+            <TabsTrigger value="scenario-planning" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <LineChart className="w-4 h-4" /> Scenarios
+            </TabsTrigger>
+            <TabsTrigger value="advanced-analytics" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Award className="w-4 h-4" /> Analytics+
+            </TabsTrigger>
+            <TabsTrigger value="risk-management" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Shield className="w-4 h-4" /> Risk Mgmt
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="invoices">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card className="border-none shadow-md bg-gradient-to-br from-white to-slate-50">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Invoices</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-slate-900">${totalInvoices.toLocaleString()}</div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-md bg-gradient-to-br from-white to-green-50">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-green-600 uppercase tracking-wider">Paid</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-700">${(totalInvoices * 0.7).toLocaleString()}</div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-md bg-gradient-to-br from-white to-orange-50">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-orange-600 uppercase tracking-wider">Pending</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-orange-700">${(totalInvoices * 0.3).toLocaleString()}</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="border-none shadow-lg overflow-hidden backdrop-blur-sm bg-white/80">
-              <CardHeader className="bg-slate-50/50">
-                <CardTitle>Recent Invoices</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {invoices && invoices.length > 0 ? (
-                  <div className="divide-y divide-slate-100">
-                    {invoices.slice(0, 10).map((invoice) => (
-                      <div key={invoice.id} className="p-4 hover:bg-slate-50 transition-colors flex justify-between items-center group">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-slate-900">{invoice.invoiceNumber}</span>
-                          <span className="text-xs text-slate-400 capitalize">{invoice.status} • Due {new Date(invoice.dueDate!).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex flex-col text-right">
-                          <span className="font-bold text-slate-900">${parseFloat(invoice.totalAmount!).toLocaleString()}</span>
-                          <span className="text-xs text-slate-500">{invoice.description}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-12 text-center text-slate-400">
-                    <p>No invoices found. Create your first invoice!</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* DASHBOARD TAB */}
+          <TabsContent value="dashboard" className="space-y-6 focus:outline-none focus:ring-0 mt-0">
+            <FinanceDashboard />
           </TabsContent>
 
-          <TabsContent value="expenses">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <Card className="border-none shadow-md">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Expenses</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-slate-900">${totalExpenses.toLocaleString()}</div>
-                </CardContent>
-              </Card>
+          {/* INVOICES TAB */}
+          <TabsContent value="invoices" className="mt-0 focus:outline-none focus:ring-0">
+            <InvoiceManagement onCreateInvoice={() => setIsInvoiceModalOpen(true)} />
+          </TabsContent>
 
-              <Card className="border-none shadow-md">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-green-600 uppercase tracking-wider">Approved</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-700">
-                    ${expenses?.filter(e => e.status === "approved" || e.status === "paid").reduce((sum, e) => sum + parseFloat(e.amount || "0"), 0).toLocaleString()}
-                  </div>
-                </CardContent>
-              </Card>
+          {/* EXPENSES TAB */}
+          <TabsContent value="expenses" className="mt-0 focus:outline-none focus:ring-0">
+            <ExpenseManagement onSubmitExpense={() => setIsExpenseModalOpen(true)} />
+          </TabsContent>
 
-              <Card className="border-none shadow-md">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-yellow-600 uppercase tracking-wider">Pending</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-yellow-700">
-                    ${expenses?.filter(e => e.status === "submitted").reduce((sum, e) => sum + parseFloat(e.amount || "0"), 0).toLocaleString()}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          {/* BUDGETS TAB */}
+          <TabsContent value="budgets" className="mt-0 focus:outline-none focus:ring-0">
+            <BudgetManagement onCreateBudget={() => toast.info("Budget creation coming soon!")} />
+          </TabsContent>
 
-            <Card className="border-none shadow-lg overflow-hidden backdrop-blur-sm bg-white/80">
-              <CardHeader className="bg-slate-50/50">
-                <CardTitle>Expense Reports</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {expenses && expenses.length > 0 ? (
-                  <div className="divide-y divide-slate-100">
-                    {expenses.map((expense) => (
-                      <div key={expense.id} className="p-4 hover:bg-slate-50 transition-colors flex justify-between items-center group">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-slate-900">{expense.description}</span>
-                          <span className="text-xs text-slate-400">{expense.category} • {new Date(expense.expenseDate!).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="flex flex-col text-right">
-                            <span className="font-bold text-slate-900">${parseFloat(expense.amount!).toLocaleString()}</span>
-                            <Badge className={`${expense.status === "approved" || expense.status === "paid" ? "bg-green-100 text-green-700" :
-                                expense.status === "rejected" ? "bg-red-100 text-red-700" :
-                                  "bg-yellow-100 text-yellow-700"
-                              } border-none text-[10px] mt-1`}>
-                              {expense.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-12 text-center text-slate-400">
-                    <p>No expenses found. Submit your first expense report!</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* REPORTS TAB */}
+          <TabsContent value="reports" className="mt-0 focus:outline-none focus:ring-0">
+            <FinancialReports />
+          </TabsContent>
+
+          {/* PAYMENTS TAB */}
+          <TabsContent value="payments" className="mt-0 focus:outline-none focus:ring-0">
+            <PaymentTracking />
+          </TabsContent>
+
+          {/* AI INTELLIGENCE TAB */}
+          <TabsContent value="ai-intelligence" className="mt-0 focus:outline-none focus:ring-0">
+            <AIFinancialIntelligence />
+          </TabsContent>
+
+          {/* COLLABORATION TAB */}
+          <TabsContent value="collaboration" className="mt-0 focus:outline-none focus:ring-0">
+            <RealTimeCollaboration />
+          </TabsContent>
+
+          {/* AUTOMATION TAB */}
+          <TabsContent value="automation" className="mt-0 focus:outline-none focus:ring-0">
+            <AdvancedFinancialAutomation />
+          </TabsContent>
+
+          {/* SCENARIO PLANNING TAB */}
+          <TabsContent value="scenario-planning" className="mt-0 focus:outline-none focus:ring-0">
+            <FinancialScenarioPlanning />
+          </TabsContent>
+
+          {/* ADVANCED ANALYTICS TAB */}
+          <TabsContent value="advanced-analytics" className="mt-0 focus:outline-none focus:ring-0">
+            <AdvancedFinancialAnalytics />
+          </TabsContent>
+
+          {/* RISK MANAGEMENT TAB */}
+          <TabsContent value="risk-management" className="mt-0 focus:outline-none focus:ring-0">
+            <FinancialRiskManagement />
           </TabsContent>
         </Tabs>
 
         <CreateInvoiceModal
           open={isInvoiceModalOpen}
           onOpenChange={setIsInvoiceModalOpen}
-          onSuccess={refetchInvoices}
+          onSuccess={handleInvoiceSuccess}
         />
 
         <CreateExpenseModal
           open={isExpenseModalOpen}
           onOpenChange={setIsExpenseModalOpen}
-          onSuccess={refetchExpenses}
+          onSuccess={handleExpenseSuccess}
         />
       </div>
     </ERPDashboardLayout>
