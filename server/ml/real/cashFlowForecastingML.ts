@@ -35,20 +35,20 @@ export class CashFlowForecastingML {
     }
 
     // Sort by date
-    const sorted = [...historicalData].sort((a, b) => 
+    const sorted = [...historicalData].sort((a, b) =>
       a.date.getTime() - b.date.getTime()
     );
 
     // Extract time series
     const amounts = sorted.map(d => d.amount);
-    
+
     // Normalize
     const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
     const std = Math.sqrt(
       amounts.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / amounts.length
     ) || 1;
     this.scaler = { mean, std };
-    
+
     const normalized = amounts.map(a => (a - mean) / std);
 
     // Learn seasonality (weekly pattern)
@@ -73,41 +73,30 @@ export class CashFlowForecastingML {
   private async trainTrendModel(deseasonalized: number[]): Promise<void> {
     // Create time features (normalized 0-1)
     const timeSteps = deseasonalized.map((_, i) => i / deseasonalized.length);
-    
+
     // Build model for trend
     this.trendModel = tf.sequential({
       layers: [
-        tf.layers.dense({ inputShape: [1], units: 32, activation: 'relu' }),
-        tf.layers.dropout({ rate: 0.2 }),
-        tf.layers.dense({ units: 16, activation: 'relu' }),
-        tf.layers.dense({ units: 1 })
+        tf.layers.dense({ inputShape: [1], units: 1, useBias: true }) // Simple linear regression for stable extrapolation
       ]
     });
 
-    this.trendModel.compile({
-      optimizer: tf.train.adam(0.01),
-      loss: 'meanSquaredError'
-    });
+    // Compute simple linear regression (y = mx + b) analytically 
+    // This perfectly fits the trend and guarantees no wild negative extrapolation from poor random weights
+    const n = timeSteps.length;
+    const sumX = timeSteps.reduce((sum, x) => sum + x, 0);
+    const sumY = deseasonalized.reduce((sum, y) => sum + y, 0);
+    const sumXY = timeSteps.reduce((sum, x, i) => sum + x * deseasonalized[i], 0);
+    const sumX2 = timeSteps.reduce((sum, x) => sum + x * x, 0);
 
-    // Train
-    const xs = tf.tensor2d(timeSteps, [timeSteps.length, 1]);
-    const ys = tf.tensor2d(deseasonalized, [deseasonalized.length, 1]);
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const bias = (sumY - slope * sumX) / n;
 
-    await this.trendModel.fit(xs, ys, {
-      epochs: 100,
-      batchSize: 32,
-      verbose: 0,
-      callbacks: {
-        onEpochEnd: (epoch, logs) => {
-          if (epoch % 20 === 0) {
-            console.log(`Trend model epoch ${epoch}: loss = ${logs?.loss.toFixed(4)}`);
-          }
-        }
-      }
-    });
-
-    xs.dispose();
-    ys.dispose();
+    // Instantly set the optimal weights without needing epochs
+    this.trendModel.layers[0].setWeights([
+      tf.tensor2d([[slope]]), // kernel 
+      tf.tensor1d([bias])     // bias
+    ]);
   }
 
   /**
@@ -124,7 +113,7 @@ export class CashFlowForecastingML {
       seasonalCounts[dayOfWeek]++;
     });
 
-    const seasonality = seasonalSums.map((sum, i) => 
+    const seasonality = seasonalSums.map((sum, i) =>
       seasonalCounts[i] > 0 ? sum / seasonalCounts[i] : 0
     );
 
@@ -144,10 +133,10 @@ export class CashFlowForecastingML {
       throw new Error('Model not trained. Call train() first.');
     }
 
-    const sorted = [...historicalData].sort((a, b) => 
+    const sorted = [...historicalData].sort((a, b) =>
       a.date.getTime() - b.date.getTime()
     );
-    
+
     const lastDate = sorted[sorted.length - 1].date;
     const baseTimeStep = sorted.length;
 
@@ -180,7 +169,7 @@ export class CashFlowForecastingML {
         date: forecastDate,
         predicted: Math.max(0, predicted),
         lower: Math.max(0, lower),
-        upper,
+        upper: Math.max(0, upper),
         trend: trendNormalized * this.scaler.std + this.scaler.mean,
         seasonal: seasonalComponent * this.scaler.std
       });

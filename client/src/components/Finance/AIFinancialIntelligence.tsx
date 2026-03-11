@@ -5,10 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { 
-  Brain, 
-  TrendingUp, 
-  AlertTriangle, 
+import {
+  Brain,
+  TrendingUp,
+  AlertTriangle,
   Target,
   Zap,
   Eye,
@@ -30,7 +30,7 @@ export function AIFinancialIntelligence() {
   // Fetch real data
   const { data: expenses } = trpc.finance.getExpenses.useQuery();
   const { data: invoices } = trpc.finance.getInvoices.useQuery();
-  
+
   // Real ML: Cash Flow Forecasting
   const { data: cashFlowForecast, isLoading: isForecastLoading } = trpc.ai.forecastCashFlow.useQuery({
     daysAhead: 90
@@ -40,7 +40,7 @@ export function AIFinancialIntelligence() {
 
   // Real ML: Fraud Detection (test with sample transaction)
   const fraudDetectionMutation = trpc.ai.detectFraud.useMutation();
-  
+
   // Real LLM: Expense Categorization
   const categorizeMutation = trpc.ai.categorizeExpense.useMutation();
 
@@ -52,7 +52,7 @@ export function AIFinancialIntelligence() {
 
   // Test fraud detection on mount (only once)
   useEffect(() => {
-    if (expenses && expenses.length > 0 && !fraudDetectionRan.current && !fraudTestResult) {
+    if (!fraudDetectionRan.current && !fraudTestResult) {
       fraudDetectionRan.current = true;
       // Test with a suspicious transaction
       fraudDetectionMutation.mutate({
@@ -75,7 +75,7 @@ export function AIFinancialIntelligence() {
         }
       });
     }
-  }, [expenses, fraudTestResult, fraudDetectionMutation]);
+  }, [fraudTestResult, fraudDetectionMutation]);
 
   const testExpenseCategorization = async () => {
     setIsAnalyzing(true);
@@ -113,7 +113,7 @@ export function AIFinancialIntelligence() {
   // Calculate stats from real forecast
   const forecastStats = cashFlowForecast?.stats;
   const next30DaysForecast = cashFlowForecast?.forecasts.slice(0, 30);
-  const avgNext30Days = next30DaysForecast 
+  const avgNext30Days = next30DaysForecast
     ? Math.round(next30DaysForecast.reduce((sum, f) => sum + f.predicted, 0) / 30)
     : 0;
 
@@ -129,8 +129,8 @@ export function AIFinancialIntelligence() {
           <p className="text-slate-500 text-sm">Real ML algorithms and LLM-powered insights</p>
         </div>
         <div className="flex gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={testExpenseCategorization}
             disabled={isAnalyzing}
             className="flex items-center gap-2"
@@ -238,19 +238,34 @@ export function AIFinancialIntelligence() {
           <CardContent>
             {fraudTestResult ? (
               <div className="space-y-4">
-                <div className="p-4 border border-red-200 bg-red-50 rounded-lg">
+                <div className={`p-4 border rounded-lg ${fraudTestResult.score >= 75 ? 'border-red-200 bg-red-50' :
+                  fraudTestResult.score >= 50 ? 'border-orange-200 bg-orange-50' :
+                    'border-emerald-200 bg-emerald-50'
+                  }`}>
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h4 className="font-semibold text-red-900">Test Transaction: $5,000</h4>
-                      <p className="text-sm text-red-700">Category: Office Supplies</p>
+                      <h4 className={`font-semibold ${fraudTestResult.score >= 75 ? 'text-red-900' :
+                        fraudTestResult.score >= 50 ? 'text-orange-900' :
+                          'text-emerald-900'
+                        }`}>Test Transaction: $5,000</h4>
+                      <p className={`text-sm ${fraudTestResult.score >= 75 ? 'text-red-700' :
+                        fraudTestResult.score >= 50 ? 'text-orange-700' :
+                          'text-emerald-700'
+                        }`}>Category: Office Supplies</p>
                     </div>
                     <Badge className={`${getRiskColor(fraudTestResult.score)} font-bold`}>
                       {fraudTestResult.score}% Risk
                     </Badge>
                   </div>
                   <div className="mb-3">
-                    <p className="text-xs font-medium text-red-800 mb-2">ML Algorithm Detected:</p>
-                    <ul className="text-xs text-red-700 space-y-1">
+                    <p className={`text-xs font-medium mb-2 ${fraudTestResult.score >= 75 ? 'text-red-800' :
+                      fraudTestResult.score >= 50 ? 'text-orange-800' :
+                        'text-emerald-800'
+                      }`}>ML Algorithm Detected:</p>
+                    <ul className={`text-xs space-y-1 ${fraudTestResult.score >= 75 ? 'text-red-700' :
+                      fraudTestResult.score >= 50 ? 'text-orange-700' :
+                        'text-emerald-700'
+                      }`}>
                       {fraudTestResult.factors.map((factor: string, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <AlertTriangle className="w-3 h-3" />
@@ -259,7 +274,10 @@ export function AIFinancialIntelligence() {
                       ))}
                     </ul>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-red-700">
+                  <div className={`flex items-center gap-2 text-xs ${fraudTestResult.score >= 75 ? 'text-red-700' :
+                    fraudTestResult.score >= 50 ? 'text-orange-700' :
+                      'text-emerald-700'
+                    }`}>
                     <Activity className="w-3 h-3" />
                     <span>Risk Level: <strong>{fraudTestResult.risk.toUpperCase()}</strong></span>
                     <span className="ml-auto">Confidence: {fraudTestResult.confidence}%</span>
@@ -404,7 +422,7 @@ export function AIFinancialIntelligence() {
                     placeholder="Enter expense description..."
                   />
                 </div>
-                <Button 
+                <Button
                   onClick={testExpenseCategorization}
                   disabled={isAnalyzing}
                   className="w-full"

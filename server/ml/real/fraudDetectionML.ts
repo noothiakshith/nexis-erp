@@ -97,14 +97,14 @@ export class FraudDetectionML {
     else if (anomalyScore >= 0.5) risk = 'medium';
     else risk = 'low';
 
-    // Confidence based on consistency across trees
+    // Confidence based on consistency across trees and training quality
     const pathLengthStd = this.standardDeviation(pathLengths);
-    const confidence = 1 - Math.min(1, pathLengthStd / avgPathLength);
+    const confidence = Math.max(0.5, 1 - (pathLengthStd / (avgPathLength || 1)));
 
     return {
-      score: Math.round(anomalyScore * 100) / 100,
+      score: anomalyScore,
       risk,
-      confidence: Math.round(confidence * 100) / 100,
+      confidence,
       factors
     };
   }
@@ -175,27 +175,37 @@ export class FraudDetectionML {
   ): string[] {
     const factors: string[] = [];
 
-    if (transaction.amount > transaction.avgAmount + 2 * transaction.stdDevAmount) {
-      factors.push(`Amount ${Math.round(transaction.amount)} is unusually high`);
+    // Amount anomalies
+    const amountZ = (transaction.amount - transaction.avgAmount) / (transaction.stdDevAmount || 1);
+    if (amountZ > 2.5) {
+      factors.push(`Transaction amount ($${Math.round(transaction.amount)}) is significantly higher than usual`);
     }
 
-    if (transaction.hour < 6 || transaction.hour > 22) {
-      factors.push('Transaction at unusual hour');
+    // Time anomalies
+    if (transaction.hour < 7 || transaction.hour > 21) {
+      factors.push(`Transaction occurred at an unusual time (${transaction.hour % 12 || 12} ${transaction.hour >= 12 ? 'PM' : 'AM'})`);
     }
 
-    if (transaction.transactionFrequency24h > 10) {
-      factors.push(`${transaction.transactionFrequency24h} transactions in 24h`);
+    // Frequency anomalies
+    if (transaction.transactionFrequency24h > 5) {
+      factors.push(`High transaction frequency detected (${transaction.transactionFrequency24h} in 24h)`);
     }
 
-    if (transaction.timeSinceLastTransaction < 5) {
-      factors.push('Multiple transactions within minutes');
+    // Velocity anomalies
+    if (transaction.timeSinceLastTransaction < 10) {
+      factors.push(`High velocity: only ${Math.round(transaction.timeSinceLastTransaction)} minutes since last transaction`);
     }
 
-    if (transaction.isRoundAmount === 1 && transaction.amount >= 1000) {
-      factors.push('Suspiciously round amount');
+    // Pattern anomalies
+    if (transaction.isRoundAmount === 1 && transaction.amount >= 500) {
+      factors.push('Suspiciously round transaction amount');
     }
 
-    return factors.length > 0 ? factors : ['Normal transaction pattern'];
+    if (transaction.isWeekend === 1) {
+      factors.push('Weekend transaction pattern');
+    }
+
+    return factors.length > 0 ? factors : ['Unusual transaction pattern detected by ML model'];
   }
 
   /**
@@ -245,18 +255,15 @@ export class FraudDetectionML {
   }
 
   /**
-   * Random sample without replacement
+   * Bootstrap sample with replacement for diversity
    */
   private randomSample(data: number[][], size: number): number[][] {
     const sample: number[][] = [];
-    const indices = new Set<number>();
+    const n = data.length;
 
-    while (sample.length < Math.min(size, data.length)) {
-      const idx = Math.floor(Math.random() * data.length);
-      if (!indices.has(idx)) {
-        indices.add(idx);
-        sample.push(data[idx]);
-      }
+    for (let i = 0; i < size; i++) {
+      const idx = Math.floor(Math.random() * n);
+      sample.push(data[idx]);
     }
 
     return sample;

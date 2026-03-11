@@ -265,7 +265,7 @@ export class MLPipeline {
   /**
    * Train Fraud Detection model
    */
-  private async trainFraudDetection(): Promise<void> {
+  async trainFraudDetection(): Promise<void> {
     const db = await getDb();
     if (!db) throw new Error('DB not available');
 
@@ -297,6 +297,10 @@ export class MLPipeline {
       await fraudDetectionML.train(normalTransactions);
     } else {
       // Use real transaction data
+      const amounts = txData.map((tx: any) => parseFloat(tx.amount) || 0);
+      const globalAvg = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+      const globalStd = Math.sqrt(amounts.reduce((sq, n) => sq + Math.pow(n - globalAvg, 2), 0) / amounts.length) || 1;
+
       const features = txData.map((tx: any) => {
         const d = new Date(tx.paymentDate);
         const amount = parseFloat(tx.amount) || 0;
@@ -304,10 +308,10 @@ export class MLPipeline {
           amount,
           hour: d.getHours(),
           dayOfWeek: d.getDay(),
-          transactionFrequency24h: 2, // Would calculate from history
-          avgAmount: 300,
-          stdDevAmount: 100,
-          timeSinceLastTransaction: 120,
+          transactionFrequency24h: 1,
+          avgAmount: globalAvg,
+          stdDevAmount: globalStd,
+          timeSinceLastTransaction: 1440, // assume 1 day if unknown
           isWeekend: d.getDay() === 0 || d.getDay() === 6 ? 1 : 0,
           isRoundAmount: amount % 100 === 0 ? 1 : 0
         };
@@ -320,7 +324,7 @@ export class MLPipeline {
   /**
    * Train Cash Flow Forecasting model
    */
-  private async trainCashFlowForecasting(): Promise<void> {
+  async trainCashFlowForecasting(): Promise<void> {
     const db = await getDb();
     if (!db) throw new Error('DB not available');
 

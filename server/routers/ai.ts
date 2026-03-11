@@ -16,6 +16,8 @@ import { mlPipeline } from '../ml/real/mlPipeline';
 import { demandForecastingML } from '../ml/real/demandForecastingML';
 import { stockClassificationML } from '../ml/real/stockClassificationML';
 import { reorderOptimizationML } from '../ml/real/reorderOptimizationML';
+import { fraudDetectionML } from '../ml/real/fraudDetectionML';
+import { cashFlowForecastingML } from '../ml/real/cashFlowForecastingML';
 import { getDb } from '../db';
 import { expenses, invoices, leads, products, stockMovements } from '../../drizzle/schema';
 import { eq, desc, sql } from 'drizzle-orm';
@@ -59,6 +61,52 @@ export const aiRouter = router({
       };
 
       const fraudScore = await fraudDetectionService.detectFraud(transaction, history);
+
+      try {
+        if (!fraudDetectionML.getModelInfo().trained) {
+          await mlPipeline.trainFraudDetection();
+        }
+
+        if (fraudDetectionML.getModelInfo().trained) {
+          const hour = transaction.timestamp.getHours();
+          const dayOfWeek = transaction.timestamp.getDay();
+
+          const last24h = history.filter(h =>
+            transaction.timestamp.getTime() - h.timestamp.getTime() <= 24 * 60 * 60 * 1000
+          );
+          const transactionFrequency24h = last24h.length;
+
+          const amounts = history.map(h => h.amount);
+          const avgAmount = amounts.length > 0 ? amounts.reduce((a, b) => a + b, 0) / amounts.length : transaction.amount;
+          const stdDevAmount = amounts.length > 1
+            ? Math.sqrt(amounts.reduce((sq, n) => sq + Math.pow(n - avgAmount, 2), 0) / (amounts.length - 1))
+            : 1;
+
+          const timeSinceLastTransaction = history.length > 0
+            ? (transaction.timestamp.getTime() - Math.max(...history.map(h => h.timestamp.getTime()))) / (1000 * 60)
+            : 10000;
+
+          const mlInput = {
+            amount: transaction.amount,
+            hour,
+            dayOfWeek,
+            transactionFrequency24h,
+            avgAmount,
+            stdDevAmount,
+            timeSinceLastTransaction,
+            isWeekend: (dayOfWeek === 0 || dayOfWeek === 6) ? 1 : 0,
+            isRoundAmount: transaction.amount % 100 === 0 ? 1 : 0
+          };
+
+          const mlFraud = await fraudDetectionML.predict(mlInput);
+          fraudScore.score = Math.round(mlFraud.score * 100);
+          fraudScore.risk = mlFraud.risk;
+          fraudScore.factors = mlFraud.factors;
+          (fraudScore as any).confidence = Math.round(mlFraud.confidence * 100);
+        }
+      } catch (err) {
+        console.error("Real ML detectFraud failed:", err);
+      }
 
       return {
         ...fraudScore,
@@ -124,20 +172,49 @@ export const aiRouter = router({
         };
       }
 
-      const forecasts = await cashFlowForecastingService.forecastCashFlow(
+      let forecasts = await cashFlowForecastingService.forecastCashFlow(
         historicalData,
         input.daysAhead
       );
 
-      const stats = await cashFlowForecastingService.getSummaryStats(forecasts);
+      let stats = await cashFlowForecastingService.getSummaryStats(forecasts);
+
+      try {
+        if (!cashFlowForecastingML.getModelInfo().trained && historicalData.length >= 30) {
+          await mlPipeline.trainCashFlowForecasting();
+        }
+
+        if (cashFlowForecastingML.getModelInfo().trained) {
+          const mlForecasts = await cashFlowForecastingML.forecast(historicalData, input.daysAhead);
+          const mlStats = await cashFlowForecastingML.getSummary(mlForecasts);
+
+          forecasts = mlForecasts.map(f => ({
+            date: f.date,
+            predicted: Math.max(0, f.predicted),
+            lower: Math.max(0, f.lower),
+            upper: f.upper,
+            trend: f.trend,
+            seasonal: f.seasonal
+          })) as any;
+
+          stats = {
+            avgPredicted: mlStats.avgPredicted,
+            totalPredicted: mlStats.totalPredicted,
+            trend: mlStats.trend,
+            volatility: mlStats.seasonalityStrength
+          };
+        }
+      } catch (err) {
+        console.error("Real ML forecastCashFlow failed:", err);
+      }
 
       return {
         forecasts: forecasts.map(f => ({
-          date: f.date.toISOString().split('T')[0],
+          date: new Date(f.date).toISOString().split('T')[0],
           predicted: Math.round(f.predicted),
           lower: Math.round(f.lower),
           upper: Math.round(f.upper),
-          trend: Math.round(f.trend)
+          trend: Math.round(f.trend || 0)
         })),
         stats,
         historicalDataPoints: historicalData.length
