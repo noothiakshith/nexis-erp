@@ -9,7 +9,16 @@ import { SalesPipeline } from "@/components/CRM/SalesPipeline";
 import { SalesAnalytics } from "@/components/CRM/SalesAnalytics";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
-import { Eye } from "lucide-react";
+import {
+  Eye,
+  Users,
+  LayoutDashboard,
+  TrendingUp,
+  FileText,
+  Brain,
+  Plus
+} from "lucide-react";
+import { LeadScoringReal } from "@/components/CRM/LeadScoringReal";
 
 export default function CRM() {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = React.useState(false);
@@ -83,12 +92,23 @@ export default function CRM() {
         </div>
 
         {/* Main CRM Tabs */}
-        <Tabs defaultValue="pipeline" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="pipeline">Sales Pipeline</TabsTrigger>
-            <TabsTrigger value="contacts">All Contacts</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
+        <Tabs defaultValue="pipeline" className="space-y-6">
+          <TabsList className="bg-white/50 border border-slate-200 p-1 rounded-xl shadow-sm inline-flex h-auto w-full overflow-x-auto justify-start">
+            <TabsTrigger value="pipeline" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <LayoutDashboard className="w-4 h-4" /> Sales Pipeline
+            </TabsTrigger>
+            <TabsTrigger value="contacts" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <Users className="w-4 h-4" /> All Contacts
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TrendingUp className="w-4 h-4" /> Analytics
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <FileText className="w-4 h-4" /> Reports
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="gap-2 py-2.5 data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold text-purple-700">
+              <Brain className="w-4 h-4" /> AI Intelligence
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pipeline" className="space-y-4">
@@ -135,11 +155,11 @@ export default function CRM() {
                             <td className="px-6 py-4 text-center">
                               <Badge className={
                                 lead.status === "won" ? "bg-green-100 text-green-700" :
-                                lead.status === "lost" ? "bg-red-100 text-red-700" :
-                                lead.status === "proposal" ? "bg-orange-100 text-orange-700" :
-                                lead.status === "qualified" ? "bg-purple-100 text-purple-700" :
-                                lead.status === "contacted" ? "bg-blue-100 text-blue-700" :
-                                "bg-gray-100 text-gray-700"
+                                  lead.status === "lost" ? "bg-red-100 text-red-700" :
+                                    lead.status === "proposal" ? "bg-orange-100 text-orange-700" :
+                                      lead.status === "qualified" ? "bg-purple-100 text-purple-700" :
+                                        lead.status === "contacted" ? "bg-blue-100 text-blue-700" :
+                                          "bg-gray-100 text-gray-700"
                               }>
                                 {lead.status}
                               </Badge>
@@ -176,8 +196,8 @@ export default function CRM() {
                             <td className="px-6 py-4 text-center">
                               <Badge className={
                                 customer.status === "active" ? "bg-green-100 text-green-700" :
-                                customer.status === "inactive" ? "bg-gray-100 text-gray-700" :
-                                "bg-yellow-100 text-yellow-700"
+                                  customer.status === "inactive" ? "bg-gray-100 text-gray-700" :
+                                    "bg-yellow-100 text-yellow-700"
                               }>
                                 {customer.status}
                               </Badge>
@@ -221,6 +241,10 @@ export default function CRM() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="ai" className="space-y-4">
+            <LeadScoringReal />
           </TabsContent>
         </Tabs>
 

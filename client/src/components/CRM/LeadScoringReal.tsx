@@ -6,11 +6,15 @@ import { Progress } from "@/components/ui/progress";
 import { trpc } from "@/lib/trpc";
 import { Target, TrendingUp, Flame, Snowflake, Loader2, Brain } from "lucide-react";
 
-export function LeadScoringReal() {
-  const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
+interface LeadScoringRealProps {
+  leadId?: number;
+}
 
-  // Fetch all leads
-  const { data: leads } = trpc.crm.getLeads.useQuery();
+export function LeadScoringReal({ leadId: propLeadId }: LeadScoringRealProps = {}) {
+  const [selectedLeadId, setSelectedLeadId] = useState<number | null>(propLeadId || null);
+
+  // Fetch all leads if not in single lead mode
+  const { data: leads } = trpc.crm.getLeads.useQuery(undefined, { enabled: !propLeadId });
 
   // Real ML: Batch Lead Scoring
   const { data: batchScores, isLoading: isBatchLoading } = trpc.ai.batchScoreLeads.useQuery();
@@ -42,16 +46,18 @@ export function LeadScoringReal() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-          <Brain className="w-7 h-7 text-purple-600" />
-          AI Lead Scoring (Real ML)
-        </h2>
-        <p className="text-slate-500 text-sm">Logistic regression-like algorithm with 10 weighted features</p>
-      </div>
+      {!propLeadId && (
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+            <Brain className="w-7 h-7 text-purple-600" />
+            AI Lead Scoring (Real ML)
+          </h2>
+          <p className="text-slate-500 text-sm">Logistic regression-like algorithm with 10 weighted features</p>
+        </div>
+      )}
 
       {/* Distribution Cards */}
-      {batchScores && (
+      {!propLeadId && batchScores && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="border-none shadow-md bg-gradient-to-br from-red-50 to-red-100">
             <CardContent className="p-6">
@@ -124,80 +130,82 @@ export function LeadScoringReal() {
       )}
 
       {/* Lead Scores Table */}
-      <Card className="border-slate-200 shadow-sm">
-        <CardHeader>
-          <CardTitle>All Leads - ML Scores</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isBatchLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
-              <span className="ml-2 text-slate-500">Running ML scoring algorithm...</span>
-            </div>
-          ) : batchScores ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
-                  <tr>
-                    <th className="px-6 py-4">Lead</th>
-                    <th className="px-6 py-4">Company</th>
-                    <th className="px-6 py-4 text-center">ML Score</th>
-                    <th className="px-6 py-4 text-center">Category</th>
-                    <th className="px-6 py-4 text-center">Conv. Prob</th>
-                    <th className="px-6 py-4">Recommendation</th>
-                    <th className="px-6 py-4 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {batchScores.scores.map((score: any) => (
-                    <tr key={score.leadId} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="px-6 py-4">
-                        <p className="font-semibold text-slate-900">{score.leadName}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-slate-700">{score.company}</p>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="flex flex-col items-center">
-                          <span className="text-lg font-bold text-slate-900">{score.score}</span>
-                          <Progress value={score.score} className="w-16 h-1 mt-1" />
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Badge className={getCategoryColor(score.category)}>
-                          <span className="flex items-center gap-1">
-                            {getCategoryIcon(score.category)}
-                            {score.category}
-                          </span>
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="font-semibold text-slate-900">
-                          {(score.conversionProbability * 100).toFixed(0)}%
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-xs text-slate-600">{score.recommendation}</p>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setSelectedLeadId(score.leadId)}
-                        >
-                          Details
-                        </Button>
-                      </td>
+      {!propLeadId && (
+        <Card className="border-slate-200 shadow-sm">
+          <CardHeader>
+            <CardTitle>All Leads - ML Scores</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isBatchLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                <span className="ml-2 text-slate-500">Running ML scoring algorithm...</span>
+              </div>
+            ) : batchScores ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold tracking-wider">
+                    <tr>
+                      <th className="px-6 py-4">Lead</th>
+                      <th className="px-6 py-4">Company</th>
+                      <th className="px-6 py-4 text-center">ML Score</th>
+                      <th className="px-6 py-4 text-center">Category</th>
+                      <th className="px-6 py-4 text-center">Conv. Prob</th>
+                      <th className="px-6 py-4">Recommendation</th>
+                      <th className="px-6 py-4 text-center">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500 text-center py-8">No lead scores available</p>
-          )}
-        </CardContent>
-      </Card>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {batchScores.scores.map((score: any) => (
+                      <tr key={score.leadId} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-6 py-4">
+                          <p className="font-semibold text-slate-900">{score.leadName}</p>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-sm text-slate-700">{score.company}</p>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <div className="flex flex-col items-center">
+                            <span className="text-lg font-bold text-slate-900">{score.score}</span>
+                            <Progress value={score.score} className="w-16 h-1 mt-1" />
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <Badge className={getCategoryColor(score.category)}>
+                            <span className="flex items-center gap-1">
+                              {getCategoryIcon(score.category)}
+                              {score.category}
+                            </span>
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="font-semibold text-slate-900">
+                            {(score.conversionProbability * 100).toFixed(0)}%
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-xs text-slate-600">{score.recommendation}</p>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelectedLeadId(score.leadId)}
+                          >
+                            Details
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500 text-center py-8">No lead scores available</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Individual Lead Details */}
       {selectedLeadId && (
@@ -261,8 +269,8 @@ export function LeadScoringReal() {
 
                 <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
                   <p className="text-xs text-purple-800">
-                    <strong>Algorithm:</strong> Weighted logistic regression with 10 features: engagement score, company size, 
-                    industry fit, interaction count, email open rate, website visits, demo requests, budget range, 
+                    <strong>Algorithm:</strong> Weighted logistic regression with 10 features: engagement score, company size,
+                    industry fit, interaction count, email open rate, website visits, demo requests, budget range,
                     decision maker contact, and response time.
                   </p>
                 </div>

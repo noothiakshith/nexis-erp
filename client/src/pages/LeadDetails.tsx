@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LeadScoring } from "@/components/CRM/LeadScoring";
+import { LeadScoringReal } from "@/components/CRM/LeadScoringReal";
 import { InteractionHistory } from "@/components/CRM/InteractionHistory";
 import { trpc } from "@/lib/trpc";
-import { 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  Building, 
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  Building,
   DollarSign,
   Calendar,
   User,
@@ -68,8 +68,8 @@ export default function LeadDetails() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               onClick={() => setLocation("/crm")}
             >
@@ -165,7 +165,7 @@ export default function LeadDetails() {
                     <p className="font-medium">{lead.email}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-gray-400" />
                   <div>
@@ -174,7 +174,7 @@ export default function LeadDetails() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Building className="h-5 w-5 text-gray-400" />
@@ -183,7 +183,7 @@ export default function LeadDetails() {
                     <p className="font-medium">{lead.company}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <User className="h-5 w-5 text-gray-400" />
                   <div>
@@ -205,7 +205,7 @@ export default function LeadDetails() {
           </TabsList>
 
           <TabsContent value="scoring">
-            <LeadScoring lead={lead} />
+            <LeadScoringReal leadId={leadId} />
           </TabsContent>
 
           <TabsContent value="interactions">
