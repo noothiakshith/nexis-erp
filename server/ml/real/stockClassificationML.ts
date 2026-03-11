@@ -77,7 +77,7 @@ export class StockClassificationML {
     ]);
 
     // Normalize using training scaler
-    const normalized = features.map(f => 
+    const normalized = features.map(f =>
       f.map((val, i) => (val - this.scaler!.mean[i]) / this.scaler!.std[i])
     );
 
@@ -149,11 +149,11 @@ export class StockClassificationML {
 
     for (let cluster = 0; cluster < 3; cluster++) {
       const clusterProducts = products.filter((_, i) => predictions[i] === cluster);
-      
+
       if (clusterProducts.length > 0) {
         const avgRevenue = clusterProducts.reduce((sum, p) => sum + p.totalRevenue, 0) / clusterProducts.length;
         const avgTurnover = clusterProducts.reduce((sum, p) => sum + p.turnoverRate, 0) / clusterProducts.length;
-        
+
         stats.set(cluster, {
           avgRevenue,
           avgTurnover,
@@ -181,9 +181,14 @@ export class StockClassificationML {
     clusters.sort((a, b) => b.score - a.score);
 
     const labels: { [cluster: number]: 'A' | 'B' | 'C' } = {};
-    labels[clusters[0].cluster] = 'A'; // Highest score
-    labels[clusters[1].cluster] = 'B'; // Medium score
-    labels[clusters[2].cluster] = 'C'; // Lowest score
+    if (clusters.length > 0) labels[clusters[0].cluster] = 'A'; // Highest score
+    if (clusters.length > 1) labels[clusters[1].cluster] = 'B'; // Medium score
+    if (clusters.length > 2) labels[clusters[2].cluster] = 'C'; // Lowest score
+
+    // Handle any missing clusters just in case (e.g. they had no products in stats)
+    for (let i = 0; i < 3; i++) {
+      if (!labels[i]) labels[i] = 'C';
+    }
 
     return labels;
   }

@@ -37,7 +37,7 @@ async function seedFinancialData() {
         dueDate: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000), // 30 days later
         amount: amount.toString(),
         totalAmount: amount.toString(),
-        status: Math.random() > 0.3 ? 'paid' : 'pending',
+        status: Math.random() > 0.3 ? 'paid' : 'sent',
         description: 'Professional Services',
         notes: 'Generated for ML training',
         createdAt: date,
@@ -82,7 +82,7 @@ async function seedFinancialData() {
         amount: amount.toString(),
         category: category,
         expenseDate: date,
-        status: Math.random() > 0.2 ? 'approved' : 'pending',
+        status: Math.random() > 0.2 ? 'approved' : 'draft',
         createdAt: date,
         updatedAt: date
       } as any);

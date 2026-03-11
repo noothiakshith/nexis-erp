@@ -12,6 +12,10 @@ import { demandForecastingService } from '../ml/demandForecasting';
 import { reorderOptimizationService } from '../ml/reorderOptimization';
 import { stockClassificationService } from '../ml/stockClassification';
 import { openaiService } from '../llm/openaiService';
+import { mlPipeline } from '../ml/real/mlPipeline';
+import { demandForecastingML } from '../ml/real/demandForecastingML';
+import { stockClassificationML } from '../ml/real/stockClassificationML';
+import { reorderOptimizationML } from '../ml/real/reorderOptimizationML';
 import { getDb } from '../db';
 import { expenses, invoices, leads, products, stockMovements } from '../../drizzle/schema';
 import { eq, desc, sql } from 'drizzle-orm';
@@ -32,7 +36,7 @@ export const aiRouter = router({
       // Get user's transaction history
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      
+
       const userExpenses = await db
         .select()
         .from(expenses)
@@ -55,14 +59,14 @@ export const aiRouter = router({
       };
 
       const fraudScore = await fraudDetectionService.detectFraud(transaction, history);
-      
+
       return {
         ...fraudScore,
-        message: fraudScore.risk === 'critical' 
+        message: fraudScore.risk === 'critical'
           ? 'Transaction flagged for review'
           : fraudScore.risk === 'high'
-          ? 'Transaction requires approval'
-          : 'Transaction appears normal'
+            ? 'Transaction requires approval'
+            : 'Transaction appears normal'
       };
     }),
 
@@ -77,7 +81,7 @@ export const aiRouter = router({
       // Get historical cash flow data
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      
+
       const allInvoices = await db.select().from(invoices).orderBy(invoices.issueDate);
       const allExpenses = await db.select().from(expenses).orderBy(expenses.expenseDate);
 
@@ -150,9 +154,9 @@ export const aiRouter = router({
     .query(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      
+
       const leadResults = await db.select().from(leads).where(eq(leads.id, input.leadId)).limit(1);
-      
+
       if (!leadResults || leadResults.length === 0) {
         throw new Error('Lead not found');
       }
@@ -190,7 +194,7 @@ export const aiRouter = router({
     .query(async () => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
-      
+
       const allLeads = await db.select().from(leads).limit(50);
 
       const scores = await Promise.all(
@@ -209,7 +213,7 @@ export const aiRouter = router({
           };
 
           const score = await leadScoringService.scoreLead(features);
-          
+
           return {
             leadId: leadItem.id,
             leadName: leadItem.name,
@@ -436,6 +440,31 @@ export const aiRouter = router({
         input.daysAhead
       );
 
+      try {
+        if (!demandForecastingML.getModelInfo().trained && demandHistory.length >= 30) {
+          await demandForecastingML.train(demandHistory);
+        }
+        if (demandForecastingML.getModelInfo().trained) {
+          const mlForecasts = await demandForecastingML.forecast(demandHistory, input.daysAhead);
+
+          const forecastsMap = new Map();
+          mlForecasts.forEach(f => forecastsMap.set(f.date.toISOString().split('T')[0], f));
+
+          result.forecasts.forEach(f => {
+            const dateStr = f.date.toISOString().split('T')[0];
+            if (forecastsMap.has(dateStr)) {
+              const newF = forecastsMap.get(dateStr);
+              f.predicted = newF.predicted;
+              f.lower = newF.lower;
+              f.upper = newF.upper;
+              f.confidence = newF.confidence;
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Real ML demandForecast failed:", err);
+      }
+
       return {
         productId: input.productId,
         productName: product.name,
@@ -489,6 +518,19 @@ export const aiRouter = router({
             demandHistory,
             input.daysAhead
           );
+
+          try {
+            if (!demandForecastingML.getModelInfo().trained && demandHistory.length >= 30) {
+              await demandForecastingML.train(demandHistory);
+            }
+            if (demandForecastingML.getModelInfo().trained) {
+              const mlForecasts = await demandForecastingML.forecast(demandHistory, input.daysAhead);
+              const mlTotal = mlForecasts.reduce((sum, f) => sum + f.predicted, 0);
+              const mlAvg = Math.round(mlTotal / mlForecasts.length);
+              result.summary.totalForecast = Math.round(mlTotal);
+              result.summary.avgDailyDemand = mlAvg;
+            }
+          } catch (err) { }
 
           return {
             productId: product.id,
@@ -570,6 +612,29 @@ export const aiRouter = router({
 
       const optimization = await reorderOptimizationService.optimizeReorder(productData);
 
+      try {
+        if (reorderOptimizationML.getModelInfo().trained) {
+          const mlState = {
+            currentStock: productData.currentStock,
+            avgDailyDemand: productData.avgDailyDemand,
+            demandTrend: 0.1,
+            leadTimeDays: productData.leadTimeDays,
+            daysUntilStockout: productData.avgDailyDemand > 0 ? productData.currentStock / productData.avgDailyDemand : 999,
+            seasonalFactor: 1.0
+          };
+
+          const mlOpt = await reorderOptimizationML.predict(mlState);
+          optimization.reorderQuantity = mlOpt.orderQuantity;
+          optimization.expectedAnnualCost = mlOpt.expectedCost;
+          optimization.reasoning = mlOpt.reasoning;
+          if (mlOpt.shouldReorder) {
+            optimization.urgency = 'critical';
+          }
+        }
+      } catch (err) {
+        console.error("Real ML optimizeReorder failed:", err);
+      }
+
       return {
         productId: input.productId,
         productName: product.name,
@@ -632,6 +697,25 @@ export const aiRouter = router({
 
           const optimization = await reorderOptimizationService.optimizeReorder(productData);
 
+          try {
+            if (reorderOptimizationML.getModelInfo().trained) {
+              const mlState = {
+                currentStock: productData.currentStock,
+                avgDailyDemand: productData.avgDailyDemand,
+                demandTrend: 0.1,
+                leadTimeDays: productData.leadTimeDays,
+                daysUntilStockout: productData.avgDailyDemand > 0 ? productData.currentStock / productData.avgDailyDemand : 999,
+                seasonalFactor: 1.0
+              };
+              const mlOpt = await reorderOptimizationML.predict(mlState);
+              optimization.reorderQuantity = mlOpt.orderQuantity;
+              optimization.expectedAnnualCost = mlOpt.expectedCost;
+              if (mlOpt.shouldReorder) {
+                optimization.urgency = 'critical';
+              }
+            }
+          } catch (err) { }
+
           return {
             productId: product.id,
             productName: product.name,
@@ -680,8 +764,8 @@ export const aiRouter = router({
           const outboundMovements = movements.filter(m => m.movementType === 'out');
           const totalQuantitySold = outboundMovements.reduce((sum, m) => sum + m.quantity, 0);
           const revenue = totalQuantitySold * parseFloat(product.unitPrice);
-          const turnoverRate = product.currentStock > 0 
-            ? totalQuantitySold / product.currentStock 
+          const turnoverRate = product.currentStock > 0
+            ? totalQuantitySold / product.currentStock
             : 0;
           const movementFrequency = outboundMovements.length;
 
@@ -690,8 +774,8 @@ export const aiRouter = router({
           const daysInStock = Math.floor((Date.now() - firstMovement.getTime()) / (1000 * 60 * 60 * 24));
 
           // Calculate average order size
-          const avgOrderSize = outboundMovements.length > 0 
-            ? totalQuantitySold / outboundMovements.length 
+          const avgOrderSize = outboundMovements.length > 0
+            ? totalQuantitySold / outboundMovements.length
             : 0;
 
           return {
@@ -708,6 +792,27 @@ export const aiRouter = router({
       );
 
       const result = await stockClassificationService.classifyProducts(productData);
+
+      try {
+        if (!stockClassificationML.getModelInfo().trained) {
+          await stockClassificationML.train(productData);
+        }
+        const realClusters = await stockClassificationML.predict(productData);
+
+        const classMap = new Map();
+        realClusters.forEach(c => classMap.set(c.productId, c.class));
+
+        result.classifications.forEach(c => {
+          if (classMap.has(c.productId)) {
+            c.class = classMap.get(c.productId)!;
+            if (c.class === 'A') c.priority = 'high';
+            else if (c.class === 'B') c.priority = 'medium';
+            else c.priority = 'low';
+          }
+        });
+      } catch (err) {
+        console.error("Real ML classifyStock failed:", err);
+      }
 
       return {
         classifications: result.classifications,
